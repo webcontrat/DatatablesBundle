@@ -14,6 +14,7 @@ namespace Sg\DatatablesBundle\Datatable;
 use Sg\DatatablesBundle\Datatable\Extension\Buttons;
 use Sg\DatatablesBundle\Datatable\Extension\Responsive;
 use Sg\DatatablesBundle\Datatable\Extension\RowGroup;
+use Sg\DatatablesBundle\Datatable\Extension\Scroller;
 use Sg\DatatablesBundle\Datatable\Extension\Select;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -60,6 +61,15 @@ class Extensions
      */
     protected $rowGroup;
 
+    /**
+     * The Scroller Extension.
+     * 
+     * Default: null.
+     *
+     * @var array|bool|Scroller|null
+     */
+    protected $scroller;
+    
     public function __construct()
     {
         $this->initOptions();
@@ -79,12 +89,14 @@ class Extensions
             'responsive' => null,
             'select' => null,
             'row_group' => null,
+            'scroller' => null,
         ]);
 
         $resolver->setAllowedTypes('buttons', ['null', 'array', 'bool']);
         $resolver->setAllowedTypes('responsive', ['null', 'array', 'bool']);
         $resolver->setAllowedTypes('select', ['null', 'array', 'bool']);
         $resolver->setAllowedTypes('row_group', ['null', 'array', 'bool']);
+        $resolver->setAllowedTypes('scroller', ['null', 'array', 'bool']);
 
         return $this;
     }
@@ -190,6 +202,33 @@ class Extensions
             $this->rowGroup = $newRowGroup->set($rowGroup);
         } else {
             $this->rowGroup = $rowGroup;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return array|bool|Scroller|null
+     */
+    public function getScroller()
+    {
+        return $this->scroller;
+    }
+
+    /**
+     * @param array|bool|null $scroller
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
+    public function setScroller($scroller)
+    {
+        if (\is_array($scroller)) {
+            $newScroller = new Scroller();
+            $this->scroller = $newScroller->set($scroller);
+        } else {
+            $this->scroller = $scroller;
         }
 
         return $this;
