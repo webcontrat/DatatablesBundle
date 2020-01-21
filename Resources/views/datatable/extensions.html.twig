@@ -155,7 +155,7 @@
                 loadingIndicator: true,
             {% endif %}
             {% if sg_datatables_view.extensions.scroller.rowHeight is defined and sg_datatables_view.extensions.scroller.rowHeight is not same as(null) %}
-                rowHeight: '{{ sg_datatables_view.extensions.fixedHeader.rowHeight }}',
+                rowHeight: '{{ sg_datatables_view.extensions.scroller.rowHeight }}',
             {% endif %}
             {% if sg_datatables_view.extensions.scroller.serverWait is defined and sg_datatables_view.extensions.scroller.serverWait is not same as(null) %}
                 serverWait: '{{ sg_datatables_view.extensions.scroller.serverWait }}',
