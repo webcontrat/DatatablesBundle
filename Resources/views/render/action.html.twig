@@ -60,6 +60,7 @@
 
 {{ start_html_container|raw }}
 
+{% block actions %}
 {% for actionKey, action in actions %}
     {% if render_if_actions[actionKey] is same as(true) %}
         {% if action.button is same as(false) %}
@@ -70,12 +71,13 @@
             {{ action.endHtml|raw }}
         {% else %}
             {{ action.startHtml|raw }}
-            <button type="button" {{ macros.value(values[actionKey]) }} {{ macros.attributes(attributes[actionKey]) }} {{ macros.confirm_dialog(action) }}>
+            <button type="button" {{ macros.value(values[actionKey]) }} {{ macros.href(action, route_parameters[actionKey]) }} {{ macros.attributes(attributes[actionKey]) }} {{ macros.confirm_dialog(action) }}>
                 {{ macros.link_title(action) }}
             </button>
             {{ action.endHtml|raw }}
         {% endif %}
     {% endif %}
 {% endfor %}
+{% endblock %}
 
 {{ end_html_container|raw }}

@@ -119,6 +119,14 @@ class Action
     protected $datatableName;
 
     /**
+     * Put dropdown divider div before the dropdown action.
+     * Default: false.
+     *
+     * @var bool
+     */
+    protected $dropdownDivider;
+    
+    /**
      * @param string $datatableName
      */
     public function __construct($datatableName)
@@ -152,6 +160,7 @@ class Action
             'render_if' => null,
             'start_html' => null,
             'end_html' => null,
+            'dropdown_divider' => false,
         ]);
 
         $resolver->setAllowedTypes('route', ['null', 'string']);
@@ -167,6 +176,7 @@ class Action
         $resolver->setAllowedTypes('render_if', ['null', 'Closure']);
         $resolver->setAllowedTypes('start_html', ['null', 'string']);
         $resolver->setAllowedTypes('end_html', ['null', 'string']);
+        $resolver->setAllowedTypes('dropdown_divider', 'bool');
 
         return $this;
     }
@@ -403,6 +413,26 @@ class Action
     public function setDatatableName($datatableName)
     {
         $this->datatableName = $datatableName;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDropdownDivider()
+    {
+        return $this->dropdownDivider;
+    }
+
+    /**
+     * @param bool $dorpdownDivider
+     *
+     * @return $this
+     */
+    public function setDropdownDivider($dorpdownDivider)
+    {
+        $this->dropdownDivider = $dorpdownDivider;
 
         return $this;
     }
