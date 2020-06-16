@@ -5,7 +5,7 @@
         {% else %}
             {% set vars = {} %}
         {% endif %}
-        action: {% include button.action['template'] with vars %},
+        "action": {% include button.action['template'] with vars %},
     {% endif %}
     {% if button.available is defined and button.available is not same as(null) %}
         {% if button.available['vars'] is defined %}
@@ -13,10 +13,10 @@
         {% else %}
             {% set vars = {} %}
         {% endif %}
-        available: {% include button.available['template'] with vars %},
+        "available": {% include button.available['template'] with vars %},
     {% endif %}
     {% if button.className is defined and button.className is not same as(null) %}
-        className: "{{ button.className  }}",
+        "className": "{{ button.className  }}",
     {% endif %}
     {% if button.destroy is defined and button.destroy is not same as(null) %}
         {% if button.destroy['vars'] is defined %}
@@ -24,13 +24,13 @@
         {% else %}
             {% set vars = {} %}
         {% endif %}
-        destroy: {% include button.destroy['template'] with vars %},
+        "destroy": {% include button.destroy['template'] with vars %},
     {% endif %}
     {% if button.enabled is defined and button.enabled is not same as(null) %}
-        enabled: {{ button.enabled|sg_datatables_bool_var }},
+        "enabled": {{ button.enabled|sg_datatables_bool_var }},
     {% endif %}
     {% if button.extend is defined and button.extend is not same as(null) %}
-        extend: "{{ button.extend }}",
+        "extend": "{{ button.extend }}",
     {% endif %}
     {% if button.init is defined and button.init is not same as(null) %}
         {% if button.init['vars'] is defined %}
@@ -38,26 +38,26 @@
         {% else %}
             {% set vars = {} %}
         {% endif %}
-        init: {% include button.init['template'] with vars %},
+        "init": {% include button.init['template'] with vars %},
     {% endif %}
     {% if button.key is defined and button.key is not same as(null) %}
-        key: "{{ button.key }}",
+        "key": "{{ button.key }}",
     {% endif %}
     {% if button.name is defined and button.name is not same as(null) %}
-        name: "{{ button.name }}",
+        "name": "{{ button.name }}",
     {% endif %}
     {% if button.namespace is defined and button.namespace is not same as(null) %}
-        namespace: "{{ button.namespace }}",
+        "namespace": "{{ button.namespace }}",
     {% endif %}
     {% if button.text is defined and button.text is not same as(null) %}
-        text: "{{ button.text }}",
+        "text": "{{ button.text }}",
     {% endif %}
     {% if button.titleAttr is defined and button.titleAttr is not same as(null) %}
-        titleAttr: "{{ button.titleAttr }}",
+        "titleAttr": "{{ button.titleAttr }}",
     {% endif %}
     {% if button.buttonOptions is defined and button.buttonOptions is not same as(null) %}
         {% for key, option in button.buttonOptions %}
-            {{ key }}: {{ option|json_encode|raw }},
+            "{{ key }}": {{ option|json_encode|raw }},
         {% endfor %}
     {% endif %}
 },
