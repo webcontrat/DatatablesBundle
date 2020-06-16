@@ -55,6 +55,12 @@ class DropdownActionColumn extends ActionColumn
     {
         $vars = parent::getCellContentTemplateVars($row);
 
+        if (empty($this->dropdowns)) {
+            $vars['dropdowns'] = NULL;
+            
+            return $vars;
+        }
+        
         $parameters = [];
         $attributes = [];
         $values = [];
