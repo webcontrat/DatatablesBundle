@@ -11,6 +11,7 @@
 
 namespace Sg\DatatablesBundle\Datatable;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Sg\DatatablesBundle\Datatable\Column\ColumnBuilder;
@@ -31,6 +32,13 @@ abstract class AbstractDatatable implements DatatableInterface
      * @var AuthorizationCheckerInterface
      */
     protected $authorizationChecker;
+
+    /**
+     * The doctrine service.
+     *
+     * @var ManagerRegistry
+     */
+    protected $doctrine;
 
     /**
      * The SecurityTokenStorage service.
@@ -154,7 +162,7 @@ abstract class AbstractDatatable implements DatatableInterface
         TokenStorageInterface $securityToken,
         $translator,
         RouterInterface $router,
-        EntityManagerInterface $em,
+        ManagerRegistry $doctrine,
         Environment $twig
     ) {
         $this->validateName();
@@ -173,9 +181,10 @@ abstract class AbstractDatatable implements DatatableInterface
         }
         $this->translator = $translator;
         $this->router = $router;
-        $this->em = $em;
+        $this->doctrine = $doctrine;
         $this->twig = $twig;
-
+        
+        $this->em = $em = $this->getEntityManager();
         $metadata = $em->getClassMetadata($this->getEntity());
         $this->columnBuilder = new ColumnBuilder($metadata, $twig, $router, $this->getName(), $em);
 
@@ -269,9 +278,17 @@ abstract class AbstractDatatable implements DatatableInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrine()
+    {
+        return $this->doctrine;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getEntityManager()
     {
-        return $this->em;
+        return $this->getDoctrine()->getManager();
     }
 
     /**
