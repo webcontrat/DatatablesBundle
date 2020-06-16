@@ -96,7 +96,7 @@ class MultiselectColumn extends ActionColumn
             $value = 'sg-datatables-'.$this->getDatatableName().'-checkbox-'.$value;
         }
 
-        $resultRow[$this->getIndex()] = $this->twig->render(
+        $row[$this->getIndex()] = $this->twig->render(
             $this->getCellContentTemplate(),
             [
                 'attributes' => $this->attributes,
