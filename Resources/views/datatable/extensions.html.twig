@@ -8,6 +8,7 @@
  #}
 
 {# Buttons Extension #}
+{% block extensions_buttons %}
 {% if sg_datatables_view.extensions.buttons is not same as(null) %}
     {% if sg_datatables_view.extensions.buttons is same as(true) %}
         {# the easiest way to activate the extension - buttons is a boolean value (true) #}
@@ -26,8 +27,10 @@
         ],
     {% endif %}
 {% endif %}
+{% endblock %}
 
 {# Responsive Extension #}
+{% block extensions_responsive %}
 {% if sg_datatables_view.extensions.responsive is not same as(null) %}
     {% if sg_datatables_view.extensions.responsive is same as(true) %}
         {# the easiest way to activate the extension - responsive is a boolean value (true) #}
@@ -68,8 +71,10 @@
         },
     {% endif %}
 {% endif %}
+{% endblock %}
 
 {# Select Extension #}
+{% block extensions_select %}
 {% if sg_datatables_view.extensions.select is not same as(null) %}
     {% if sg_datatables_view.extensions.select is same as(true) %}
         {# the easiest way to activate the extension - select is a boolean value (true) #}
@@ -98,8 +103,10 @@
         },
     {% endif %}
 {% endif %}
+{% endblock %}
 
 {# RowGroup Extension #}
+{% block extensions_rowgroup %}
 {% if sg_datatables_view.extensions.rowGroup is not same as(null) %}
     "rowGroup": {
     {% if sg_datatables_view.extensions.rowGroup.enable is same as(true) %}
@@ -136,8 +143,10 @@
     {% endif %}
     },
 {% endif %}
+{% endblock %}
 
 {# Scroller Extension #}
+{% block extensions_scroller %}
 {% if sg_datatables_view.extensions.scroller is not same as(null) %}
     {% if sg_datatables_view.extensions.scroller is same as(true) %}
         {# the easiest way to activate the extension - scroller is a boolean value (true) #}
@@ -163,3 +172,4 @@
         },
     {% endif %}
 {% endif %} 
+{% endblock %}
