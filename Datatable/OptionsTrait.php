@@ -77,6 +77,27 @@ trait OptionsTrait
     }
 
     /**
+     * Add options. Dont rewrite existing.
+     * 
+     * @param array $options
+     * 
+     * @return $this
+     */
+    public function add(array $options)
+    {
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
+
+        $add = $resolver->resolve($options);
+        $add = array_intersect_key($add, $options);
+        
+        $this->options = array_merge($this->options, $add);
+        $this->callingSettersWithOptions($add);
+
+        return $this;
+    }
+
+    /**
      * Option to JSON.
      */
     protected function optionToJson($value)
