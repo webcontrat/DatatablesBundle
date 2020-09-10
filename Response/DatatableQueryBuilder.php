@@ -403,6 +403,7 @@ class DatatableQueryBuilder
                 $this->addSearchColumn($column, null, $searchDql);
             } elseif (true === $this->accessor->getValue($column, 'selectColumn')) {
                 $parts = explode('.', $dql);
+                $withExpr = $this->accessor->getValue($column, 'joinConditions');
 
                 while (\count($parts) > 1) {
                     $previousPart = $currentPart;
@@ -412,8 +413,14 @@ class DatatableQueryBuilder
                     $currentAlias = ($previousPart === $this->entityShortName ? '' : $previousPart.'_').$currentPart;
                     $currentAlias = $this->getSafeName($currentAlias);
 
-                    if (! \array_key_exists($previousAlias.'.'.$currentPart, $this->joins)) {
-                        $this->addJoin($previousAlias.'.'.$currentPart, $currentAlias, $this->accessor->getValue($column, 'joinType'));
+                    $columnTableName = $previousAlias.'.'.$currentPart;
+                    if (!array_key_exists($columnTableName, $this->joins)) {
+                        $this->addJoin($columnTableName, $currentAlias, $this->accessor->getValue($column, 'joinType'));
+                    }
+                    // for the last dql part join using WITH, if expression is given for column
+                    if (count($parts) === 1 && array_key_exists($columnTableName, $this->joins) && null !== $withExpr) {
+                        $with = str_replace($currentPart . '.', $currentAlias . '.', $withExpr);
+                        $this->addJoin($columnTableName, $currentAlias, $this->accessor->getValue($column, 'joinType'), $with);
                     }
 
                     $metadata = $this->setIdentifierFromAssociation($currentAlias, $currentPart, $metadata);
@@ -486,7 +493,11 @@ class DatatableQueryBuilder
     private function setJoins(QueryBuilder $qb)
     {
         foreach ($this->joins as $key => $value) {
-            $qb->{$value['type']}($key, $value['alias']);
+            if (\array_key_exists('with', $value) && null !== $value['with']) {
+                $qb->{$value['type']}($key, $value['alias'], Query\Expr\Join::WITH, $value['with']);
+            } else {
+                $qb->{$value['type']}($key, $value['alias']);
+            }
         }
 
         return $this;
@@ -714,14 +725,16 @@ class DatatableQueryBuilder
      * @param string $columnTableName
      * @param string $alias
      * @param string $type
+     * @param string $with
      *
      * @return $this
      */
-    private function addJoin($columnTableName, $alias, $type)
+    private function addJoin($columnTableName, $alias, $type, $with = null)
     {
         $this->joins[$columnTableName] = [
             'alias' => $alias,
             'type' => $type,
+            'with' => $with,
         ];
 
         return $this;

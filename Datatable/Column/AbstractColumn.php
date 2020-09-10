@@ -190,6 +190,14 @@ abstract class AbstractColumn implements ColumnInterface
     protected $joinType;
 
     /**
+     * Join conditions, if the column represents an association.
+     * Default: null
+     *
+     * @var string|null
+     */
+    protected $joinConditions;
+    
+    /**
      * The data type of the column.
      * Is set automatically in ColumnBuilder when 'null'.
      * Default: null.
@@ -323,6 +331,7 @@ abstract class AbstractColumn implements ColumnInterface
             'width' => null,
             'add_if' => null,
             'join_type' => 'leftJoin',
+            'join_conditions' => null,
             'type_of_field' => null,
             'responsive_priority' => null,
             'sent_in_response' => true,
@@ -344,6 +353,7 @@ abstract class AbstractColumn implements ColumnInterface
         $resolver->setAllowedTypes('width', ['null', 'string']);
         $resolver->setAllowedTypes('add_if', ['null', 'Closure']);
         $resolver->setAllowedTypes('join_type', 'string');
+        $resolver->setAllowedTypes('join_conditions', ['null', 'string']);
         $resolver->setAllowedTypes('type_of_field', ['null', 'string']);
         $resolver->setAllowedTypes('responsive_priority', ['null', 'int']);
         $resolver->setAllowedTypes('sent_in_response', ['bool']);
@@ -769,6 +779,30 @@ abstract class AbstractColumn implements ColumnInterface
         return $this;
     }
 
+    /**
+     * Get join conditions.
+     *
+     * @return string
+     */
+    public function getJoinConditions()
+    {
+        return $this->joinConditions;
+    }
+
+    /**
+     * Set join conditions.
+     *
+     * @param string $joinConditions
+     *
+     * @return $this
+     */
+    public function setJoinConditions($joinConditions = null)
+    {
+        $this->joinConditions = $joinConditions;
+
+        return $this;
+    }
+    
     /**
      * Get type of field.
      *
