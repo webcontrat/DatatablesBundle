@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  ~ This file is part of the SgDatatablesBundle project.
+  ~
+  ~ Copyright (c) 2021. stwe <https://github.com/stwe/DatatablesBundle>
+  ~
+  ~ License: MIT
+  -->
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="sg_datatables.twig.extension" class="Sg\DatatablesBundle\Twig\DatatableTwigExtension">
+            <tag name="twig.extension"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+    </services>
+</container>
