@@ -2,7 +2,7 @@
 
 This is a sandbox in which a more flexible system for displaying the columns is tested.
 So far it was the case that a column was integrated into an inheritance hierarchy.
-With adding new Feuture, the Diamond of Death can occur. The code is shifting more and more
+With adding a new feature, the `Diamond of Death` can occur. The code is shifting more and more
 towards the base class and is too inflexible. At the moment I'm working on a system of widgets
 without logic that can be added to a column. A renderer later takes the column and the widgets
 and performs the rendering.
@@ -11,10 +11,26 @@ This allows the user to write his own widgets and renderers and thus determine t
 
 ### Setup
 
+```bash
+$ symfony new blog
+$ cd blog
+$ mkdir lib
+$ cd lib
+$ git clone https://github.com/stwe/DatatablesBundle.git -b 2.0 --single-branch
+```
+
+```bash
+$ composer require annotations
+$ composer require template
+$ composer require profiler --dev
+$ composer require debug
+$ composer require symfony/asset
+```
+
 ##### bundles.php
 
 ```php
-// bundles.php
+// blog/config/bundles.php
 
 return [
     // ...
@@ -37,7 +53,7 @@ return [
 ##### PostDatatable.php
 
 ```php
-// PostDatatable.php
+// Datatable/PostDatatable.php
 
 namespace App\Datatable;
 
@@ -79,6 +95,58 @@ class PostDatatable extends AbstractDatatable
 }
 ```
 
+##### PostController
+
+```php
+// Controller/PostController
+
+namespace App\Controller;
+
+use App\Datatable\PostDatatable;
+use Sg\DatatablesBundle\Datatable\Response\DatatableResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class PostController extends AbstractController
+{
+    private PostDatatable $datatable;
+
+    /**
+     * PostController constructor.
+     * @param PostDatatable $datatable
+     */
+    public function __construct(PostDatatable $datatable)
+    {
+        $this->datatable = $datatable;
+        $this->datatable->buildDatatable();
+    }
+
+    /**
+     * @Route("/")
+     */
+    public function homepage(): Response
+    {
+        return $this->render(
+            'post/index.html.twig',
+            [
+                'datatable' => $this->datatable
+            ]
+        );
+    }
+
+    /**
+     * @Route("/ajax", name="table_content", methods={"POST", "GET"})
+     */
+    public function getResponse(): JsonResponse
+    {
+        $response = new DatatableResponse($this->datatable);
+        return $response->getJsonResponse();
+    }
+}
+```
+
 ##### base.html.twig
 
 ```html
@@ -111,7 +179,7 @@ class PostDatatable extends AbstractDatatable
 ##### index.html.twig
 
 ```html
-<!-- index.html.twig -->
+<!-- post/index.html.twig -->
 
 {% extends 'base.html.twig' %}
 
