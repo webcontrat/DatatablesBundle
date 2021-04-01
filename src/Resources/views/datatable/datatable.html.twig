@@ -6,32 +6,18 @@
  # License: MIT
  #}
 
-{# dump(sg_datatables_view) #}
+{% block sg_datatables %}
 
-<table id="table_id" class="display">
-    <thead>
-    </thead>
-    <tfoot>
-    </tfoot>
-</table>
+    {% block sg_datatables_html %}
 
-<script type="text/javascript">
-    $(document).ready( function () {
-        $('#table_id').DataTable(
-            {
-                ajax: {
-                    url: '{{ path('table_content') }}',
-                    type: 'POST'
-                },
-                columns: [
-                    {% for col in sg_datatables_view.getColumnBuilder().getColumns() %}
-                    {
-                        title: '{{ col.getDql() }}',
-                        data: '{{ col.getDql() }}',
-                    },
-                    {% endfor %}
-                ]
-            }
-        );
-    } );
-</script>
+        {% include '@SgDatatables/datatable/datatable_html.html.twig' %}
+
+    {% endblock %}
+
+    {% block sg_datatables_js %}
+
+        {% include '@SgDatatables/datatable/datatable_js.html.twig' %}
+
+    {% endblock %}
+
+{% endblock  %}
