@@ -50,6 +50,10 @@ return [
     },
 ```
 
+```bash
+$ composer dump-autoload
+```
+
 ##### PostDatatable.php
 
 ```php
