@@ -54,12 +54,20 @@ return [
 $ composer dump-autoload
 ```
 
+##### services.yaml
+
+```yaml
+App\Datatables\:
+    resource: '../src/Datatables/'
+    tags: ['datatable']
+```
+
 ##### PostDatatable.php
 
 ```php
-// Datatable/PostDatatable.php
+// src/Datatables/PostDatatable.php
 
-namespace App\Datatable;
+namespace App\Datatables;
 
 use Sg\DatatablesBundle\Datatable\AbstractDatatable;
 use Sg\DatatablesBundle\Datatable\Renderer\DummyRenderer;
@@ -68,7 +76,7 @@ use Sg\DatatablesBundle\Datatable\Widget\HtmlFormatWidget;
 
 class PostDatatable extends AbstractDatatable
 {
-    public function buildDatatable(array $options = []): void
+    public function buildDatatable(): void
     {
         // create and add columns
         $this->getColumnBuilder()->addColumn('name');
@@ -96,6 +104,11 @@ class PostDatatable extends AbstractDatatable
         $currentCol0->setRenderer(new DummyRenderer());
         $currentCol1->setRenderer(new DummyRenderer());
     }
+    
+    public function getId(): string
+    {
+        return 'post';
+    }
 }
 ```
 
@@ -106,47 +119,54 @@ class PostDatatable extends AbstractDatatable
 
 namespace App\Controller;
 
-use App\Datatable\PostDatatable;
-use Sg\DatatablesBundle\Datatable\Response\DatatableResponse;
+use Sg\DatatablesBundle\Datatables\Datatables;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PostController extends AbstractController
 {
-    private PostDatatable $datatable;
-
-    /**
-     * PostController constructor.
-     * @param PostDatatable $datatable
-     */
-    public function __construct(PostDatatable $datatable)
-    {
-        $this->datatable = $datatable;
-        $this->datatable->buildDatatable();
-    }
-
     /**
      * @Route("/")
      */
-    public function homepage(): Response
+    public function homepage(Datatables $datatables): Response
     {
+        $datatable = $datatables->getDatatableById('post');
+
         return $this->render(
             'post/index.html.twig',
             [
-                'datatable' => $this->datatable
+                'datatable' => $datatable
             ]
         );
     }
 
     /**
-     * @Route("/ajax", name="table_content", methods={"POST", "GET"})
+     * @Route("/ajax", name="table_content", methods={"GET", "POST"})
      */
-    public function getResponse(): JsonResponse
+    public function tabledata(Request $request, Datatables $datatables)
     {
-        $response = new DatatableResponse($this->datatable);
-        return $response->getJsonResponse();
+        //$response = $datatables->handleRequest($request, 'post');
+
+        $data =
+            [
+                'data' =>
+                    [
+                        [
+                            'name' => 'Tiger',
+                            'position' => false
+                        ],
+                        [
+                            'name' => '',
+                            'position' => 'Worker'
+                        ]
+                    ]
+            ];
+
+        $jsonResponse = $datatables->handleResponse($data, 'post');
+
+        return $jsonResponse;
     }
 }
 ```

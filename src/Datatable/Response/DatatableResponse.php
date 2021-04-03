@@ -40,25 +40,11 @@ class DatatableResponse
     //-------------------------------------------------
 
     /**
+     * @param array $data
      * @return JsonResponse
      */
-    public function getJsonResponse(): JsonResponse
+    public function getJsonResponse(array $data): JsonResponse
     {
-        $data =
-            [
-                'data' =>
-                    [
-                        [
-                            'name' => 'Tiger',
-                            'position' => false
-                        ],
-                        [
-                            'name' => '',
-                            'position' => 'Worker'
-                        ]
-                    ]
-            ];
-
         foreach ($data['data'] as &$row) {
             foreach ($this->datatable->getColumnBuilder()->getColumns() as $column) {
                 $idx = $column->getDql();

@@ -14,12 +14,21 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="sg_datatables.datatable.abstract_datatable" class="Sg\DatatablesBundle\Datatable\AbstractDatatable" abstract="true" />
-        <service id="Sg\DatatablesBundle\Datatable\AbstractDatatable" alias="sg_datatables.datatable.abstract_datatable" />
 
-        <service id="sg_datatables.twig.extension" class="Sg\DatatablesBundle\Twig\DatatableTwigExtension">
+        <!--
+         ! [NOTE] The "Sg\DatatablesBundle\Twig\DatatableTwigExtension" service or alias has been removed or inlined when the
+         !        container was compiled.
+        -->
+
+        <!--suppress TaggedExtendsInterfaceClass -->
+        <service id="sg_datatables.twig.datatable_twig_extension"
+                 class="Sg\DatatablesBundle\Twig\DatatableTwigExtension">
             <tag name="twig.extension"/>
-            <argument type="service" id="event_dispatcher"/>
         </service>
+
+        <service id="sg_datatables.datatables.datatables" class="Sg\DatatablesBundle\Datatables\Datatables">
+            <argument type="service" id="logger"/>
+        </service>
+        <service id="Sg\DatatablesBundle\Datatables\Datatables" alias="sg_datatables.datatables.datatables" />
     </services>
 </container>

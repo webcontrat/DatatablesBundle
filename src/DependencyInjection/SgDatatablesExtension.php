@@ -12,19 +12,24 @@ namespace Sg\DatatablesBundle\DependencyInjection;
 
 use Exception;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 
-class SgDatatablesExtension extends Extension
+class SgDatatablesExtension extends Extension implements CompilerPassInterface
 {
     //-------------------------------------------------
     // Override
     //-------------------------------------------------
 
     /**
+     * Loads a specific configuration.
+     *
      * @param array $configs
      * @param ContainerBuilder $container
+     *
      * @throws Exception
      */
     public function load(array $configs, ContainerBuilder $container)
@@ -35,7 +40,24 @@ class SgDatatablesExtension extends Extension
         );
         $loader->load('services.xml');
 
-        $configuration = $this->getConfiguration($configs, $container);
+        $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
+    }
+
+    /**
+     * You can modify the container here before it is dumped to PHP code.
+     *
+     * @param ContainerBuilder $container
+     */
+    public function process(ContainerBuilder $container)
+    {
+        $definition = $container->findDefinition('sg_datatables.datatables.datatables');
+        $services   = $container->findTaggedServiceIds('datatable');
+
+        foreach ($services as $key => $value) {
+            $definition->addMethodCall('addDatatable', [
+                new Reference($key)
+            ]);
+        }
     }
 }

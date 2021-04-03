@@ -14,6 +14,7 @@ use Twig\Environment;
 
 interface DatatableInterface
 {
-    public function buildDatatable(array $options = []): void;
+    public function buildDatatable(): void;
     public function getTwig(): Environment;
+    public function getId(): string;
 }
