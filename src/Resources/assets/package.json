@@ -1,0 +1,22 @@
+{
+  "name": "@sg/datatables",
+  "description": "DataTables integration for Symfony.",
+  "license": "MIT",
+  "version": "2.0.0",
+  "symfony": {
+    "controllers": {
+      "datatable": {
+        "main": "src/controller.js",
+        "webpackMode": "eager",
+        "fetch": "eager",
+        "enabled": true
+      }
+    }
+  },
+  "peerDependencies": {
+    "stimulus": "^2.0.0"
+  },
+  "devDependencies": {
+    "stimulus": "^2.0.0"
+  }
+}
