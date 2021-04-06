@@ -6,17 +6,26 @@
   "symfony": {
     "controllers": {
       "datatable": {
-        "main": "src/controller.js",
-        "webpackMode": "eager",
+        "main": "dist/controller.js",
         "fetch": "eager",
-        "enabled": true
+        "enabled": true,
+        "autoimport": {
+          "@sg/datatables/src/style.css": true
+        }
       }
     }
+  },
+  "scripts": {
+    "build": "babel src -d dist"
   },
   "peerDependencies": {
     "stimulus": "^2.0.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/preset-env": "^7.12.7",
     "stimulus": "^2.0.0"
   }
 }

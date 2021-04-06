@@ -1,0 +1,25 @@
+{
+  "name": "sg/datatablesbundle",
+  "type": "symfony-bundle",
+  "description": "Symfony Datatable Bundle",
+  "keywords": ["symfony", "datatable", "datatables"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "stwe"
+    },
+    {
+      "name": "SgDatatablesBundle contributors",
+      "homepage": "https://github.com/stwe/DatatablesBundle/graphs/contributors"
+    }
+  ],
+  "autoload": {
+    "psr-4": { "Sg\\DatatablesBundle\\": "lib/DatatablesBundle/src/" }
+  },
+  "require": {
+    "php": ">=7.2.5"
+  },
+  "require-dev": {
+  },
+  "minimum-stability": "dev"
+}
