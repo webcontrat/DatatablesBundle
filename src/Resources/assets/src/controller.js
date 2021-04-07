@@ -8,11 +8,8 @@ export default class extends Controller {
     static targets = ['sgdatatable'];
 
     connect() {
-        console.log("Connect");
+        console.log("DatatablesBundle connect()");
 
-        $(this.sgdatatableTarget).DataTable( {
-            scrollY: 300,
-            paging: false
-        } );
+        // A global controller is currently in use. See asset folder in the Sandbox.
     }
 }

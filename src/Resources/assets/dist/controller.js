@@ -51,10 +51,14 @@ var _default = /*#__PURE__*/function (_Controller) {
   _createClass(_default, [{
     key: "connect",
     value: function connect() {
-      console.log("Connect");
+      console.log("DatatablesBundle connect()");
+      var dataAjax = JSON.parse(this.sgdatatableTarget.getAttribute('data-view'));
+      console.log(dataAjax);
       (0, _jquery["default"])(this.sgdatatableTarget).DataTable({
-        scrollY: 300,
-        paging: false
+        ajax: {
+          url: dataAjax.url,
+          type: dataAjax.post
+        }
       });
     }
   }]);

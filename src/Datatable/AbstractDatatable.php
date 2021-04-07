@@ -12,18 +12,38 @@ namespace Sg\DatatablesBundle\Datatable;
 
 use Sg\DatatablesBundle\Datatable\Column\ColumnBuilder;
 use Twig\Environment;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 abstract class AbstractDatatable implements DatatableInterface
 {
     /**
+     * Inject Environment.
+     *
      * @var Environment
      */
     private Environment $twig;
 
     /**
+     * Inject UrlGeneratorInterface (Router).
+     *
+     * @var UrlGeneratorInterface
+     */
+    private UrlGeneratorInterface $router;
+
+    /**
+     * Column container.
+     *
      * @var ColumnBuilder
      */
     private ColumnBuilder $columnBuilder;
+
+    /**
+     * Load data for the table's content from an Ajax source.
+     * @link https://datatables.net/reference/option/ajax
+     *
+     * @var array
+     */
+    private array $ajax;
 
     //-------------------------------------------------
     // Ctor.
@@ -33,16 +53,35 @@ abstract class AbstractDatatable implements DatatableInterface
      * AbstractDatatable constructor.
      *
      * @param Environment $twig
+     * @param UrlGeneratorInterface $router
      */
-    public function __construct(Environment $twig)
+    public function __construct(Environment $twig, UrlGeneratorInterface $router)
     {
         $this->twig = $twig;
+        $this->router = $router;
         $this->columnBuilder = new ColumnBuilder($this);
+        $this->ajax = [];
     }
 
     //-------------------------------------------------
-    // Getter
-    //-------------------------------------------------
+    // Implement DatatableInterface
+    //--------------------------------------------------
+
+    /**
+     * @return Environment
+     */
+    public function getTwig(): Environment
+    {
+        return $this->twig;
+    }
+
+    /**
+     * @return UrlGeneratorInterface
+     */
+    public function getRouter(): UrlGeneratorInterface
+    {
+        return $this->router;
+    }
 
     /**
      * @return ColumnBuilder
@@ -52,15 +91,19 @@ abstract class AbstractDatatable implements DatatableInterface
         return $this->columnBuilder;
     }
 
-    //-------------------------------------------------
-    // Implement DatatableInterface
-    //-------------------------------------------------
+    /**
+     * @return array
+     */
+    public function getAjax(): array
+    {
+        return $this->ajax;
+    }
 
     /**
-     * @return Environment
+     * @param array $options
      */
-    public function getTwig(): Environment
+    public function setAjax(array $options): void
     {
-        return $this->twig;
+        $this->ajax = $options;
     }
 }

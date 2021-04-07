@@ -10,9 +10,10 @@
 
 namespace Sg\DatatablesBundle\Datatable\Column;
 
+use JsonSerializable;
 use Sg\DatatablesBundle\Datatable\DatatableInterface;
 
-class ColumnBuilder
+class ColumnBuilder implements JsonSerializable
 {
     /**
      * @var DatatableInterface
@@ -72,5 +73,20 @@ class ColumnBuilder
         $column->setDql($dql);
 
         $this->columns->append($column);
+    }
+
+    //-------------------------------------------------
+    // Implement JsonSerializable
+    //-------------------------------------------------
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return
+            [
+                'columns' => $this->columns->getArrayCopy(),
+            ];
     }
 }

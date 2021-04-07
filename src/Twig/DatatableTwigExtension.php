@@ -55,7 +55,7 @@ class DatatableTwigExtension extends AbstractExtension
     {
         return $twig->render(
             '@SgDatatables/datatable/datatable.html.twig',
-            ['sg_datatables_view' => $datatable]
+            ['sg_datatable' => $datatable]
         );
     }
 }

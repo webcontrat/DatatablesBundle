@@ -11,11 +11,12 @@
 namespace Sg\DatatablesBundle\Datatable\Column;
 
 use InvalidArgumentException;
+use JsonSerializable;
 use Sg\DatatablesBundle\Datatable\Renderer\RendererInterface;
 use Sg\DatatablesBundle\Datatable\Widget\WidgetArrayObject;
 use Sg\DatatablesBundle\Datatable\Widget\WidgetInterface;
 
-class Column
+class Column implements JsonSerializable
 {
     /**
      * @var string
@@ -120,5 +121,20 @@ class Column
     {
         $renderer->setColumn($this);
         $this->renderer = $renderer;
+    }
+
+    //-------------------------------------------------
+    // Implement JsonSerializable
+    //-------------------------------------------------
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return
+            [
+                'dql' => $this->getDql(),
+            ];
     }
 }
