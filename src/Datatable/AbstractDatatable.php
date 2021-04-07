@@ -39,7 +39,10 @@ abstract class AbstractDatatable implements DatatableInterface
 
     /**
      * Load data for the table's content from an Ajax source.
-     * @link https://datatables.net/reference/option/ajax
+     * For the initialization, the Html5 data-ajax attribute is read later,
+     * so it must be ensured that only valid options are used.
+     *
+     * @link https://datatables.net/examples/ajax/
      *
      * @var array
      */
@@ -100,7 +103,9 @@ abstract class AbstractDatatable implements DatatableInterface
     }
 
     /**
-     * @param array $options
+     * Set @see $ajax
+     *
+     * @param array $options An array of valid ajax options.
      */
     public function setAjax(array $options): void
     {

@@ -13,7 +13,7 @@ DatatablesBundle controller
 
 <div data-controller="app">
     <table data-app-target="sgdatatable"
-           data-ajax-options="{{ sg_datatable.ajax|json_encode|e }}"
+           data-ajax="{{ sg_datatable.ajax|json_encode|e }}"
            data-column-options="{{ sg_datatable.columnBuilder|json_encode|e}}"
            class="display" style="width:100%"
     >
