@@ -14,7 +14,9 @@
     }
   ],
   "autoload": {
-    "psr-4": { "Sg\\DatatablesBundle\\": "" }
+    "psr-4": {
+      "Sg\\DatatablesBundle\\": "src/"
+    }
   },
   "require": {
     "php": ">=7.2.5"
