@@ -1,7 +1,7 @@
 {
   "name": "sg/datatablesbundle",
   "type": "symfony-bundle",
-  "description": "Symfony Datatable Bundle",
+  "description": "DataTables js integration for Symfony",
   "keywords": ["symfony", "datatable", "datatables"],
   "license": "MIT",
   "authors": [
@@ -14,12 +14,17 @@
     }
   ],
   "autoload": {
-    "psr-4": { "Sg\\DatatablesBundle\\": "lib/DatatablesBundle/src/" }
+    "psr-4": { "Sg\\DatatablesBundle\\": "" }
   },
   "require": {
     "php": ">=7.2.5"
   },
   "require-dev": {
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-main": "2.0-dev"
+    }
   },
   "minimum-stability": "dev"
 }
