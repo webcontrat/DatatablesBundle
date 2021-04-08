@@ -52,10 +52,23 @@ class SgDatatablesExtension extends Extension implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $definition = $container->findDefinition('sg_datatables.datatables.datatables');
-        $services   = $container->findTaggedServiceIds('datatable');
 
-        foreach ($services as $key => $value) {
+        // datatable services
+        $datatableServices = $container->findTaggedServiceIds('sg_datatable');
+
+        // column services
+        $columnServices = $container->findTaggedServiceIds('sg_datatable_column');
+
+        // add datatables
+        foreach ($datatableServices as $key => $value) {
             $definition->addMethodCall('addDatatable', [
+                new Reference($key)
+            ]);
+        }
+
+        // add columns to datatables
+        foreach ($columnServices as $key => $value) {
+            $definition->addMethodCall('addColumn', [
                 new Reference($key)
             ]);
         }

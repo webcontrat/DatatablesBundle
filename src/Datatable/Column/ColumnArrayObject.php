@@ -21,9 +21,9 @@ class ColumnArrayObject extends ArrayObject
     /**
      * ColumnArrayObject constructor.
      *
-     * @param Column ...$columns
+     * @param ColumnInterface ...$columns
      */
-    public function __construct(Column ...$columns)
+    public function __construct(ColumnInterface ...$columns)
     {
         parent::__construct($columns);
 

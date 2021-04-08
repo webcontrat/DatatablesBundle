@@ -33,7 +33,7 @@ class DummyRenderer extends AbstractRenderer
     public function render($rawValue): string
     {
         // get Twig
-        $twig = $this->getColumn()->getColumnBuilder()->getDatatable()->getTwig();
+        $twig = $this->getColumn()->getDatatable()->getTwig();
 
         // get and check Widgets
         $widgets = $this->getColumn()->getWidgets();

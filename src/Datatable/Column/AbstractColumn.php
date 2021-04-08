@@ -12,21 +12,24 @@ namespace Sg\DatatablesBundle\Datatable\Column;
 
 use InvalidArgumentException;
 use JsonSerializable;
+use Sg\DatatablesBundle\Datatable\DatatableInterface;
 use Sg\DatatablesBundle\Datatable\Renderer\RendererInterface;
 use Sg\DatatablesBundle\Datatable\Widget\WidgetArrayObject;
 use Sg\DatatablesBundle\Datatable\Widget\WidgetInterface;
 
-class Column implements JsonSerializable
+abstract class AbstractColumn implements ColumnInterface, JsonSerializable
 {
+    /**
+     * The parent Datatable object.
+     *
+     * @var DatatableInterface
+     */
+    private DatatableInterface $datatable;
+
     /**
      * @var string
      */
     private string $dql;
-
-    /**
-     * @var ColumnBuilder
-     */
-    private ColumnBuilder $columnBuilder;
 
     /**
      * @var WidgetArrayObject
@@ -44,12 +47,9 @@ class Column implements JsonSerializable
 
     /**
      * Column constructor.
-     *
-     * @param ColumnBuilder $columnBuilder
      */
-    public function __construct(ColumnBuilder $columnBuilder)
+    public function __construct()
     {
-        $this->columnBuilder = $columnBuilder;
         $this->widgets = new WidgetArrayObject();
     }
 
@@ -58,19 +58,19 @@ class Column implements JsonSerializable
     //-------------------------------------------------
 
     /**
+     * @return DatatableInterface
+     */
+    public function getDatatable(): DatatableInterface
+    {
+        return $this->datatable;
+    }
+
+    /**
      * @return string
      */
     public function getDql(): string
     {
         return $this->dql;
-    }
-
-    /**
-     * @return ColumnBuilder
-     */
-    public function getColumnBuilder(): ColumnBuilder
-    {
-        return $this->columnBuilder;
     }
 
     /**
@@ -121,6 +121,18 @@ class Column implements JsonSerializable
     {
         $renderer->setColumn($this);
         $this->renderer = $renderer;
+    }
+
+    //-------------------------------------------------
+    // Implement ColumnInterface
+    //-------------------------------------------------
+
+    /**
+     * @param DatatableInterface $datatable
+     */
+    public function setDatatable(DatatableInterface $datatable): void
+    {
+        $this->datatable = $datatable;
     }
 
     //-------------------------------------------------

@@ -19,9 +19,9 @@ class ColumnArrayIterator extends ArrayIterator
     //-------------------------------------------------
 
     /**
-     * @return Column
+     * @return ColumnInterface
      */
-    public function current(): Column
+    public function current(): ColumnInterface
     {
         return parent::current();
     }

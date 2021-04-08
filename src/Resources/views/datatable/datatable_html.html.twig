@@ -14,12 +14,12 @@ DatatablesBundle controller
 <div data-controller="app">
     <table data-app-target="sgdatatable"
            data-ajax="{{ sg_datatable.ajax|json_encode|e }}"
-           data-column-options="{{ sg_datatable.columnBuilder|json_encode|e}}"
+           data-column-options="{{ sg_datatable|json_encode|e}}"
            class="display" style="width:100%"
     >
         <thead>
             <tr>
-                {% for column in sg_datatable.columnBuilder.columns %}
+                {% for column in sg_datatable.columns %}
                     <th>{{ column.dql }}</th>
                 {% endfor %}
             </tr>

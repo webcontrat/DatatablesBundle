@@ -10,11 +10,13 @@
 
 namespace Sg\DatatablesBundle\Datatable;
 
-use Sg\DatatablesBundle\Datatable\Column\ColumnBuilder;
+use JsonSerializable;
+use Sg\DatatablesBundle\Datatable\Column\ColumnInterface;
 use Twig\Environment;
+use Sg\DatatablesBundle\Datatable\Column\ColumnArrayObject;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-abstract class AbstractDatatable implements DatatableInterface
+abstract class AbstractDatatable implements DatatableInterface, JsonSerializable
 {
     /**
      * Inject Environment.
@@ -31,11 +33,11 @@ abstract class AbstractDatatable implements DatatableInterface
     private UrlGeneratorInterface $router;
 
     /**
-     * Column container.
+     * The Column objects of this Datatable.
      *
-     * @var ColumnBuilder
+     * @var ColumnArrayObject
      */
-    private ColumnBuilder $columnBuilder;
+    private ColumnArrayObject $columns;
 
     /**
      * Load data for the table's content from an Ajax source.
@@ -62,7 +64,8 @@ abstract class AbstractDatatable implements DatatableInterface
     {
         $this->twig = $twig;
         $this->router = $router;
-        $this->columnBuilder = new ColumnBuilder($this);
+
+        $this->columns = new ColumnArrayObject();
         $this->ajax = [];
     }
 
@@ -87,11 +90,20 @@ abstract class AbstractDatatable implements DatatableInterface
     }
 
     /**
-     * @return ColumnBuilder
+     * @return ColumnArrayObject
      */
-    public function getColumnBuilder(): ColumnBuilder
+    public function getColumns(): ColumnArrayObject
     {
-        return $this->columnBuilder;
+        return $this->columns;
+    }
+
+    /**
+     * @param ColumnInterface $column
+     */
+    public function addColumn(ColumnInterface $column): void
+    {
+        $column->setDatatable($this);
+        $this->columns->append($column);
     }
 
     /**
@@ -110,5 +122,20 @@ abstract class AbstractDatatable implements DatatableInterface
     public function setAjax(array $options): void
     {
         $this->ajax = $options;
+    }
+
+    //-------------------------------------------------
+    // Implement JsonSerializable
+    //-------------------------------------------------
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return
+            [
+                'columns' => $this->columns->getArrayCopy(),
+            ];
     }
 }

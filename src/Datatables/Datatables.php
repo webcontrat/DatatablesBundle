@@ -12,6 +12,7 @@ namespace Sg\DatatablesBundle\Datatables;
 
 use InvalidArgumentException;
 use OutOfBoundsException;
+use Sg\DatatablesBundle\Datatable\Column\ColumnInterface;
 use Sg\DatatablesBundle\Datatable\DatatableInterface;
 use Sg\DatatablesBundle\Datatable\Response\DatatableResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -79,12 +80,33 @@ class Datatables
         $id = $datatable->getId();
 
         if (!$this->datatables->offsetExists($id)) {
+
+            // build table
             $datatable->buildDatatable();
+
+            // add the given datatable to all datatables
             $this->datatables->offsetSet($id, $datatable);
             $this->logger->debug("[Datatables::addDatatable()]: Datatable with Id $id was added.");
         } else {
             throw new InvalidArgumentException("Datatable $id already exists.");
         }
+    }
+
+    /**
+     * Add a Column to the correct Datatable.
+     *
+     * @param ColumnInterface $column
+     */
+    public function addColumn(ColumnInterface $column): void
+    {
+        // get the table by id
+        $datatable = $this->getDatatableById($column->getDatatableId());
+
+        // build column
+        $column->buildColumn();
+
+        // add the column to the datatable
+        $datatable->addColumn($column);
     }
 
     /**

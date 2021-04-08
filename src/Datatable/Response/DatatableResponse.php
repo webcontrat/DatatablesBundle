@@ -46,7 +46,7 @@ class DatatableResponse
     public function getJsonResponse(array $data): JsonResponse
     {
         foreach ($data['data'] as &$row) {
-            foreach ($this->datatable->getColumnBuilder()->getColumns() as $column) {
+            foreach ($this->datatable->getColumns() as $column) {
                 $idx = $column->getDql();
 
                 $rawValue = $row[$idx];
