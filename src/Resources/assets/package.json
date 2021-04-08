@@ -1,6 +1,6 @@
 {
-  "name": "@sg/datatables",
-  "description": "DataTables integration for Symfony.",
+  "name": "@sg/datatablesbundle",
+  "description": "DataTables js integration for Symfony",
   "license": "MIT",
   "version": "2.0.0",
   "symfony": {
@@ -10,7 +10,7 @@
         "fetch": "eager",
         "enabled": true,
         "autoimport": {
-          "@sg/datatables/src/style.css": true
+          "@sg/datatablesbundle/src/style.css": true
         }
       }
     }
