@@ -32,7 +32,7 @@ The following setup is currently used to display a table:
     |--Controller
     |----PostController.php
     |--Datatables
-    |----PostDatatable
+    |----PostDatatable.php
 /templates
     |--post
     |----index.html.twig
@@ -119,6 +119,8 @@ class PostDatatable extends AbstractDatatable
 Now we need a controller with two actions:
 
 ```php
+// src/Controller/PostController.php
+
 namespace App\Controller;
 
 use Sg\DatatablesBundle\Datatables\Datatables;
