@@ -50,6 +50,13 @@ abstract class AbstractDatatable implements DatatableInterface, JsonSerializable
      */
     private array $ajax;
 
+    /**
+     * Feature control object.
+     *
+     * @var Features
+     */
+    private Features $features;
+
     //-------------------------------------------------
     // Ctor.
     //-------------------------------------------------
@@ -67,11 +74,24 @@ abstract class AbstractDatatable implements DatatableInterface, JsonSerializable
 
         $this->columns = new ColumnArrayObject();
         $this->ajax = [];
+        $this->features = new Features();
+    }
+
+    //-------------------------------------------------
+    // Getter
+    //-------------------------------------------------
+
+    /**
+     * @return Features
+     */
+    public function getFeatures(): Features
+    {
+        return $this->features;
     }
 
     //-------------------------------------------------
     // Implement DatatableInterface
-    //--------------------------------------------------
+    //-------------------------------------------------
 
     /**
      * @return Environment
