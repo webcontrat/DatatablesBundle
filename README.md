@@ -103,7 +103,22 @@ class PostDatatable extends AbstractDatatable
 {
     public function buildDatatable(): void
     {
-        $this->setAjax([
+        $this->getFeatures()->set([
+            'auto_width' => false,
+            'defer_render' => false,
+            'info' => true,
+            'length_change' => false,
+            'ordering' => true,
+            'paging' => false,
+            'processing' => false,
+            'scroll_x' => true,
+            'scroll_y' => '200px',
+            'searching' => false,
+            'server_side' => false,
+            'state_save' => false
+        ]);
+
+        $this->getAjax()->set([
             'url' => $this->getRouter()->generate('table_content'),
             'type' => 'POST'
         ]);
