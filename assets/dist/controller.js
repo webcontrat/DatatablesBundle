@@ -51,9 +51,7 @@ var _default = /*#__PURE__*/function (_Controller) {
   _createClass(_default, [{
     key: "connect",
     value: function connect() {
-      console.log("DatatablesBundle connect()"); // A global controller is currently in use. See asset folder in the Sandbox.
-      // It is therefore possible that the version available here is not up to date
-      // todo: use the column data attribute
+      console.log("DatatablesBundle controller connect()"); // todo: use the column data attribute
 
       var columnsJson = JSON.parse(this.sgdatatableTarget.getAttribute('data-column-options'));
       var colsArray = [];

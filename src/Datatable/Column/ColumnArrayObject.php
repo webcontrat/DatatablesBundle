@@ -11,8 +11,9 @@
 namespace Sg\DatatablesBundle\Datatable\Column;
 
 use ArrayObject;
+use JsonSerializable;
 
-class ColumnArrayObject extends ArrayObject
+class ColumnArrayObject extends ArrayObject implements JsonSerializable
 {
     //-------------------------------------------------
     // Override
@@ -28,5 +29,20 @@ class ColumnArrayObject extends ArrayObject
         parent::__construct($columns);
 
         $this->setIteratorClass(ColumnArrayIterator::class);
+    }
+
+    //-------------------------------------------------
+    // Implement JsonSerializable
+    //-------------------------------------------------
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return
+            [
+                'columns' => $this->getArrayCopy()
+            ];
     }
 }

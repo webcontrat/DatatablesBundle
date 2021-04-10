@@ -16,8 +16,14 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 use Twig\TwigFunction;
 
+/**
+ * Class DatatableTwigExtension
+ *
+ * @package Sg\DatatablesBundle\Twig
+ */
 class DatatableTwigExtension extends AbstractExtension
 {
     //-------------------------------------------------
@@ -35,6 +41,16 @@ class DatatableTwigExtension extends AbstractExtension
                 [$this, 'datatablesRender'],
                 ['is_safe' => ['html'], 'needs_environment' => true],
             ),
+        ];
+    }
+
+    /**
+     * @return TwigFilter[]
+     */
+    public function getFilters(): array
+    {
+        return [
+            new TwigFilter('sg_datatables_bool_var', [$this, 'boolVar']),
         ];
     }
 
@@ -57,5 +73,25 @@ class DatatableTwigExtension extends AbstractExtension
             '@SgDatatables/datatable/datatable.html.twig',
             ['sg_datatable' => $datatable]
         );
+    }
+
+    //-------------------------------------------------
+    // Filters
+    //-------------------------------------------------
+
+    /**
+     * Renders: {{ var ? 'true' : 'false' }}.
+     *
+     * @param bool $value
+     *
+     * @return string
+     */
+    public function boolVar(bool $value): string
+    {
+        if ($value) {
+            return 'true';
+        }
+
+        return 'false';
     }
 }

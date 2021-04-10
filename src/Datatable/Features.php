@@ -10,7 +10,6 @@
 
 namespace Sg\DatatablesBundle\Datatable;
 
-use JsonSerializable;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -22,7 +21,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  *
  * @package Sg\DatatablesBundle\Datatable
  */
-class Features implements JsonSerializable
+class Features
 {
     /**
      * Feature control DataTables' smart column width handling.
@@ -411,22 +410,5 @@ class Features implements JsonSerializable
                 return;
             }
         }
-    }
-
-    //-------------------------------------------------
-    // Implement JsonSerializable
-    //-------------------------------------------------
-
-    /**
-     * Specify data which should be serialized to JSON.
-     *
-     * @return array Data which can be serialized by <b>json_encode</b>.
-     */
-    public function jsonSerialize(): array
-    {
-        return
-            [
-                // todo
-            ];
     }
 }

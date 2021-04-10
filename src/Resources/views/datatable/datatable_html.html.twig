@@ -13,8 +13,9 @@ DatatablesBundle controller
 
 <div data-controller="app">
     <table data-app-target="sgdatatable"
-           data-ajax="{{ sg_datatable.ajax|json_encode|e }}"
-           data-column-options="{{ sg_datatable|json_encode|e}}"
+           {% include '@SgDatatables/datatable/ajax.html.twig' %}
+           {% include '@SgDatatables/datatable/features.html.twig' %}
+           data-column-options="{{ sg_datatable.columns|json_encode|e}}"
            class="display" style="width:100%"
     >
         <thead>

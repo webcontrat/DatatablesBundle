@@ -15,6 +15,11 @@ use Sg\DatatablesBundle\Datatable\Column\ColumnInterface;
 use Twig\Environment;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+/**
+ * Interface DatatableInterface
+ *
+ * @package Sg\DatatablesBundle\Datatable
+ */
 interface DatatableInterface
 {
     public function buildDatatable(): void;
@@ -24,6 +29,6 @@ interface DatatableInterface
     public function getRouter(): UrlGeneratorInterface;
     public function getColumns(): ColumnArrayObject;
     public function addColumn(ColumnInterface $column): void;
-    public function getAjax(): array;
-    public function setAjax(array $options): void;
+    public function getAjax(): Ajax;
+    public function getFeatures(): Features;
 }

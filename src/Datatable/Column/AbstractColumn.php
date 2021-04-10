@@ -46,6 +46,8 @@ abstract class AbstractColumn implements ColumnInterface, JsonSerializable
     //-------------------------------------------------
 
     /**
+     * todo: inject widgets?
+     *
      * Column constructor.
      */
     public function __construct()

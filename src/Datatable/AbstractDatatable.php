@@ -10,13 +10,17 @@
 
 namespace Sg\DatatablesBundle\Datatable;
 
-use JsonSerializable;
 use Sg\DatatablesBundle\Datatable\Column\ColumnInterface;
 use Twig\Environment;
 use Sg\DatatablesBundle\Datatable\Column\ColumnArrayObject;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-abstract class AbstractDatatable implements DatatableInterface, JsonSerializable
+/**
+ * Class AbstractDatatable
+ *
+ * @package Sg\DatatablesBundle\Datatable
+ */
+abstract class AbstractDatatable implements DatatableInterface
 {
     /**
      * Inject Environment.
@@ -40,15 +44,15 @@ abstract class AbstractDatatable implements DatatableInterface, JsonSerializable
     private ColumnArrayObject $columns;
 
     /**
-     * Load data for the table's content from an Ajax source.
-     * For the initialization, the Html5 data-ajax attribute is read later,
-     * so it must be ensured that only valid options are used.
+     * Ajax control object.
+     * It is possible to reading table information directly
+     * from the DOM. But in most cases an ajax source is needed.
+     * Therefore an instance is created in the constructor. Its
+     * options, however, are all set to null by default.
      *
-     * @link https://datatables.net/examples/ajax/
-     *
-     * @var array
+     * @var Ajax
      */
-    private array $ajax;
+    private Ajax $ajax;
 
     /**
      * Feature control object.
@@ -73,20 +77,9 @@ abstract class AbstractDatatable implements DatatableInterface, JsonSerializable
         $this->router = $router;
 
         $this->columns = new ColumnArrayObject();
-        $this->ajax = [];
+
+        $this->ajax = new Ajax();
         $this->features = new Features();
-    }
-
-    //-------------------------------------------------
-    // Getter
-    //-------------------------------------------------
-
-    /**
-     * @return Features
-     */
-    public function getFeatures(): Features
-    {
-        return $this->features;
     }
 
     //-------------------------------------------------
@@ -127,35 +120,18 @@ abstract class AbstractDatatable implements DatatableInterface, JsonSerializable
     }
 
     /**
-     * @return array
+     * @return Ajax
      */
-    public function getAjax(): array
+    public function getAjax(): Ajax
     {
         return $this->ajax;
     }
 
     /**
-     * Set @see $ajax
-     *
-     * @param array $options An array of valid ajax options.
+     * @return Features
      */
-    public function setAjax(array $options): void
+    public function getFeatures(): Features
     {
-        $this->ajax = $options;
-    }
-
-    //-------------------------------------------------
-    // Implement JsonSerializable
-    //-------------------------------------------------
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return
-            [
-                'columns' => $this->columns->getArrayCopy(),
-            ];
+        return $this->features;
     }
 }
