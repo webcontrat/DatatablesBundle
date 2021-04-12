@@ -17,6 +17,11 @@ use Sg\DatatablesBundle\Datatable\Renderer\RendererInterface;
 use Sg\DatatablesBundle\Datatable\Widget\WidgetArrayObject;
 use Sg\DatatablesBundle\Datatable\Widget\WidgetInterface;
 
+/**
+ * Class AbstractColumn
+ *
+ * @package Sg\DatatablesBundle\Datatable\Column
+ */
 abstract class AbstractColumn implements ColumnInterface, JsonSerializable
 {
     /**
@@ -32,14 +37,19 @@ abstract class AbstractColumn implements ColumnInterface, JsonSerializable
     private string $dql;
 
     /**
+     * Widgets are objects that do not possess any logic.
+     * They are simple plain old data objects (POD’s).
+     *
      * @var WidgetArrayObject
      */
     private WidgetArrayObject $widgets;
 
     /**
-     * @var RendererInterface
+     * An optional renderer that changes the raw content.
+     *
+     * @var RendererInterface|null
      */
-    private RendererInterface $renderer;
+    private ?RendererInterface $renderer = null;
 
     //-------------------------------------------------
     // Ctor.
@@ -81,14 +91,6 @@ abstract class AbstractColumn implements ColumnInterface, JsonSerializable
         return $this->widgets;
     }
 
-    /**
-     * @return RendererInterface
-     */
-    public function getRenderer(): RendererInterface
-    {
-        return $this->renderer;
-    }
-
     //-------------------------------------------------
     // Setter
     //-------------------------------------------------
@@ -115,12 +117,15 @@ abstract class AbstractColumn implements ColumnInterface, JsonSerializable
     }
 
     /**
-     * @param RendererInterface $renderer
+     * @param RendererInterface|null $renderer
      */
-    public function setRenderer(RendererInterface $renderer): void
+    public function setRenderer(?RendererInterface $renderer): void
     {
-        $renderer->setColumn($this);
         $this->renderer = $renderer;
+
+        if ($renderer) {
+            $renderer->setColumn($this);
+        }
     }
 
     //-------------------------------------------------
@@ -133,6 +138,14 @@ abstract class AbstractColumn implements ColumnInterface, JsonSerializable
     public function setDatatable(DatatableInterface $datatable): void
     {
         $this->datatable = $datatable;
+    }
+
+    /**
+     * @return RendererInterface|null
+     */
+    public function getRenderer(): ?RendererInterface
+    {
+        return $this->renderer;
     }
 
     //-------------------------------------------------

@@ -11,10 +11,17 @@
 namespace Sg\DatatablesBundle\Datatable\Column;
 
 use Sg\DatatablesBundle\Datatable\DatatableInterface;
+use Sg\DatatablesBundle\Datatable\Renderer\RendererInterface;
 
+/**
+ * Interface ColumnInterface
+ *
+ * @package Sg\DatatablesBundle\Datatable\Column
+ */
 interface ColumnInterface
 {
     public function buildColumn(): void;
     public function setDatatable(DatatableInterface $datatable): void;
+    public function getRenderer(): ?RendererInterface;
     public function getDatatableId(): string;
 }
