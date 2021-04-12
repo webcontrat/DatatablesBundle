@@ -67,7 +67,16 @@ use Sg\DatatablesBundle\Datatable\Widget\HtmlFormatWidget;
 
 class PositionColumn extends AbstractColumn
 {
-    public function buildColumn()
+    private DummyRenderer $renderer;
+
+    public function __construct(DummyRenderer $renderer)
+    {
+        $this->renderer = $renderer;
+
+        parent::__construct();
+    }
+
+    public function buildColumn(): void
     {
         $this->setDql('position');
 
@@ -80,7 +89,7 @@ class PositionColumn extends AbstractColumn
         $hw->setItalic(true);
         $this->addWidget($hw);
 
-        $this->setRenderer(new DummyRenderer());
+        $this->setRenderer($this->renderer);
     }
 
     public function getDatatableId(): string
