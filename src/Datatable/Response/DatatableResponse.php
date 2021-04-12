@@ -10,8 +10,8 @@
 
 namespace Sg\DatatablesBundle\Datatable\Response;
 
+use Sg\DatatablesBundle\Datatable\Column\ColumnInterface;
 use Sg\DatatablesBundle\Datatable\DatatableInterface;
-use Sg\DatatablesBundle\Datatable\Renderer\RendererInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -56,7 +56,7 @@ class DatatableResponse
         foreach ($data[$dataScr ?? 'data'] as &$row) {
             foreach ($this->datatable->getColumns() as $column) {
                 if ($column->getRenderer()) {
-                    $this->processRenderer($column->getDql(), $column->getRenderer(), $row);
+                    $this->processRenderer($column, $row);
                 }
             }
         }
@@ -67,14 +67,16 @@ class DatatableResponse
     /**
      * Applies the Renderer to the raw value.
      *
-     * @param string $idx An index of the raw value.
-     * @param RendererInterface $renderer A Renderer that changes the raw value.
-     * @param array $row The raw values.
+     * @param ColumnInterface $column
+     * @param array $row
      */
-    private function processRenderer(string $idx, RendererInterface $renderer, array &$row): void
+    private function processRenderer(ColumnInterface $column, array &$row): void
     {
+        $idx = $column->getDql();
+        $renderer = $column->getRenderer();
+
         $rawValue = $row[$idx];
-        $newValue = $renderer->render($rawValue);
+        $newValue = $renderer->renderColumn($column, $rawValue);
         $row[$idx] = $newValue;
     }
 }

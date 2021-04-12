@@ -122,10 +122,6 @@ abstract class AbstractColumn implements ColumnInterface, JsonSerializable
     public function setRenderer(?RendererInterface $renderer): void
     {
         $this->renderer = $renderer;
-
-        if ($renderer) {
-            $renderer->setColumn($this);
-        }
     }
 
     //-------------------------------------------------

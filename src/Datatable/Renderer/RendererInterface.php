@@ -13,12 +13,14 @@ namespace Sg\DatatablesBundle\Datatable\Renderer;
 use Sg\DatatablesBundle\Datatable\Column\ColumnInterface;
 use Sg\DatatablesBundle\Datatable\Widget\WidgetArrayObject;
 
+/**
+ * Interface RendererInterface
+ *
+ * @package Sg\DatatablesBundle\Datatable\Renderer
+ */
 interface RendererInterface
 {
-    public function getColumn(): ColumnInterface;
-    public function setColumn(ColumnInterface $column): void;
     public function checkForWidgetTypes(WidgetArrayObject $widgets): void;
-
-    public function render($rawValue): string;
+    public function renderColumn(ColumnInterface $column, $rawValue): string;
     public function getWidgetTypes(): array;
 }

@@ -11,38 +11,22 @@
 namespace Sg\DatatablesBundle\Datatable\Renderer;
 
 use Exception;
-use Sg\DatatablesBundle\Datatable\Column\ColumnInterface;
 use Sg\DatatablesBundle\Datatable\Widget\WidgetArrayObject;
 
+/**
+ * Class AbstractRenderer
+ *
+ * @package Sg\DatatablesBundle\Datatable\Renderer
+ */
 abstract class AbstractRenderer implements RendererInterface
 {
-    /**
-     * @var ColumnInterface
-     */
-    private ColumnInterface $column;
-
     //-------------------------------------------------
     // Implement RendererInterface
     //-------------------------------------------------
 
     /**
-     * @return ColumnInterface
-     */
-    public function getColumn(): ColumnInterface
-    {
-        return $this->column;
-    }
-
-    /**
-     * @param ColumnInterface $column
-     */
-    public function setColumn(ColumnInterface $column): void
-    {
-        $this->column = $column;
-    }
-
-    /**
      * @param WidgetArrayObject $widgets
+     *
      * @throws Exception
      */
     public function checkForWidgetTypes(WidgetArrayObject $widgets): void

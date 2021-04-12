@@ -10,33 +10,37 @@
 
 namespace Sg\DatatablesBundle\Datatable\Renderer;
 
+use Exception;
+use Sg\DatatablesBundle\Datatable\Column\ColumnInterface;
 use Sg\DatatablesBundle\Datatable\Widget\BooleanWidget;
 use Sg\DatatablesBundle\Datatable\Widget\HtmlFormatWidget;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 
+/**
+ * Class DummyRenderer
+ *
+ * @package Sg\DatatablesBundle\Datatable\Renderer
+ */
 class DummyRenderer extends AbstractRenderer
 {
     //-------------------------------------------------
-    // Override
+    // Implement RendererInterface
     //-------------------------------------------------
 
     /**
-     * @param mixed $rawValue
+     * @param ColumnInterface $column
+     * @param $rawValue
      *
      * @return string
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
+     *
+     * @throws Exception
      */
-    public function render($rawValue): string
+    public function renderColumn(ColumnInterface $column, $rawValue): string
     {
         // get Twig
-        $twig = $this->getColumn()->getDatatable()->getTwig();
+        $twig = $column->getDatatable()->getTwig();
 
         // get and check Widgets
-        $widgets = $this->getColumn()->getWidgets();
+        $widgets = $column->getWidgets();
         $this->checkForWidgetTypes($widgets);
 
         $booleanWidget = $widgets->offsetGet(BooleanWidget::class);

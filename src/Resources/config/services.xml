@@ -14,15 +14,27 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+
+        <!-- Twig Extension -->
         <!--suppress TaggedExtendsInterfaceClass -->
         <service id="sg_datatables.twig.datatable_twig_extension"
                  class="Sg\DatatablesBundle\Twig\DatatableTwigExtension">
             <tag name="twig.extension"/>
         </service>
 
+        <!-- Datatables container -->
         <service id="sg_datatables.datatables.datatables" class="Sg\DatatablesBundle\Datatables\Datatables">
             <argument type="service" id="logger"/>
         </service>
         <service id="Sg\DatatablesBundle\Datatables\Datatables" alias="sg_datatables.datatables.datatables" />
+
+        <!-- DummyRenderer -->
+        <service id="sg_datatables.datatable_renderer.dummy_renderer"
+                 class="Sg\DatatablesBundle\Datatable\Renderer\DummyRenderer"
+        />
+        <service id="Sg\DatatablesBundle\Datatable\Renderer\DummyRenderer"
+                 alias="sg_datatables.datatable_renderer.dummy_renderer"
+        />
+
     </services>
 </container>
