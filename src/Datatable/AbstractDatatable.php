@@ -10,6 +10,7 @@
 
 namespace Sg\DatatablesBundle\Datatable;
 
+use Psr\Log\LoggerInterface;
 use Sg\DatatablesBundle\Datatable\Column\ColumnInterface;
 use Twig\Environment;
 use Sg\DatatablesBundle\Datatable\Column\ColumnArrayObject;
@@ -35,6 +36,13 @@ abstract class AbstractDatatable implements DatatableInterface
      * @var UrlGeneratorInterface
      */
     private UrlGeneratorInterface $router;
+
+    /**
+     * Inject LoggerInterface.
+     *
+     * @var LoggerInterface
+     */
+    private LoggerInterface $logger;
 
     /**
      * The Column objects of this Datatable.
@@ -70,16 +78,24 @@ abstract class AbstractDatatable implements DatatableInterface
      *
      * @param Environment $twig
      * @param UrlGeneratorInterface $router
+     * @param LoggerInterface $logger
      */
-    public function __construct(Environment $twig, UrlGeneratorInterface $router)
+    public function __construct(
+        Environment $twig,
+        UrlGeneratorInterface $router,
+        LoggerInterface $logger
+    )
     {
         $this->twig = $twig;
         $this->router = $router;
+        $this->logger = $logger;
 
         $this->columns = new ColumnArrayObject();
 
         $this->ajax = new Ajax();
         $this->features = new Features();
+
+        $this->log('__construct', 'object was created');
     }
 
     //-------------------------------------------------
@@ -117,6 +133,8 @@ abstract class AbstractDatatable implements DatatableInterface
     {
         $column->setDatatable($this);
         $this->columns->append($column);
+
+        $this->log('addColumn', 'column ' . get_class($column) . ' was added');
     }
 
     /**
@@ -133,5 +151,21 @@ abstract class AbstractDatatable implements DatatableInterface
     public function getFeatures(): Features
     {
         return $this->features;
+    }
+
+    //-------------------------------------------------
+    // Helper
+    //-------------------------------------------------
+
+    /**
+     * Log helper.
+     *
+     * @param string $method
+     * @param string $text
+     */
+    private function log(string $method, string $text): void
+    {
+        $id = $this->getId();
+        $this->logger->debug("[AbstractDatatable::$method()]: Datatable Id $id: $text");
     }
 }

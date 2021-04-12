@@ -13,6 +13,11 @@ namespace Sg\DatatablesBundle\Datatables;
 use ArrayIterator;
 use Sg\DatatablesBundle\Datatable\DatatableInterface;
 
+/**
+ * Class DatatableArrayIterator
+ *
+ * @package Sg\DatatablesBundle\Datatables
+ */
 class DatatableArrayIterator extends ArrayIterator
 {
     //-------------------------------------------------

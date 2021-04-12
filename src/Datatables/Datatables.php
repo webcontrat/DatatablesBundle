@@ -19,6 +19,44 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class Datatables
+ *
+ * A container for all Datatable objects.
+ *
+ * The compiler pass adds all classes (Datatables) tagged with sg_datatable to the container $datatables.
+ * Then all classes tagged with sg_datatable_column (Columns) are assigned to the datatable.
+ * In order for this to work, all tables and columns must be defined as a service with the corresponding tags.
+ *
+ * App\Datatables\:
+ *     resource: '../src/Datatables/'
+ *     tags: ['sg_datatable']
+ *
+ * App\Columns\:
+ *     resource: '../src/Columns/'
+ *     tags: ['sg_datatable_column']
+ *
+ *  ---------------
+ *  # $datatables #
+ *  ---------------
+ *      |
+ *      | many tables                                |
+ *      |                                            |
+ *      -----------   -----------                    |
+ *      # Table 1 #   # Table x #                    |  Datatable function getId() = 'post'
+ *      -----------   -----------                    |                 |
+ *                |                                  |                 |
+ *                | many columns                     |  If the string of both functions matches,
+ *                |                                  |    the column is added to the table.
+ *                |                                  |                |
+ *                ------------   ------------        |                |
+ *                # Column 1 #   # Column x #        |   Column function getDatatableId() = 'post'
+ *                ------------   ------------        |
+ *
+ *
+ *
+ * @package Sg\DatatablesBundle\Datatables
+ */
 class Datatables
 {
     /**
@@ -53,29 +91,15 @@ class Datatables
     }
 
     //-------------------------------------------------
-    // Getter
-    //-------------------------------------------------
-
-    /**
-     * Get all Datatable objects.
-     *
-     * @return DatatableArrayObject
-     */
-    public function getDatatables(): DatatableArrayObject
-    {
-        return $this->datatables;
-    }
-
-    //-------------------------------------------------
     // Array Add && Get
     //-------------------------------------------------
 
     /**
-     * Add a Datatable.
+     * Add and build Datatable.
      *
      * @param DatatableInterface $datatable
      */
-    public function addDatatable(DatatableInterface $datatable): void
+    public function addAndBuildDatatable(DatatableInterface $datatable): void
     {
         $id = $datatable->getId();
 
@@ -88,16 +112,16 @@ class Datatables
             $this->datatables->offsetSet($id, $datatable);
             $this->logger->debug("[Datatables::addDatatable()]: Datatable with Id $id was added.");
         } else {
-            throw new InvalidArgumentException("Datatable $id already exists.");
+            throw new InvalidArgumentException("Datatable with Id $id already exists.");
         }
     }
 
     /**
-     * Add a Column to the correct Datatable.
+     * Build a Column and add it to the correct Datatable.
      *
      * @param ColumnInterface $column
      */
-    public function addColumn(ColumnInterface $column): void
+    public function addAndBuildColumnToDatatable(ColumnInterface $column): void
     {
         // get the table by id
         $datatable = $this->getDatatableById($column->getDatatableId());
@@ -123,7 +147,7 @@ class Datatables
             return $this->datatables->offsetGet($id);
         }
 
-        throw new OutOfBoundsException("Datatable $id not found.");
+        throw new OutOfBoundsException("Datatable with Id $id not found.");
     }
 
     //-------------------------------------------------

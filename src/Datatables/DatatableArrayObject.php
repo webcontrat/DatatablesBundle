@@ -13,6 +13,11 @@ namespace Sg\DatatablesBundle\Datatables;
 use ArrayObject;
 use Sg\DatatablesBundle\Datatable\DatatableInterface;
 
+/**
+ * Class DatatableArrayObject
+ *
+ * @package Sg\DatatablesBundle\Datatables
+ */
 class DatatableArrayObject extends ArrayObject
 {
     //-------------------------------------------------

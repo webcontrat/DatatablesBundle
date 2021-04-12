@@ -18,6 +18,11 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 
+/**
+ * Class SgDatatablesExtension
+ *
+ * @package Sg\DatatablesBundle\DependencyInjection
+ */
 class SgDatatablesExtension extends Extension implements CompilerPassInterface
 {
     //-------------------------------------------------
@@ -45,7 +50,7 @@ class SgDatatablesExtension extends Extension implements CompilerPassInterface
     }
 
     /**
-     * You can modify the container here before it is dumped to PHP code.
+     * Modify the container.
      *
      * @param ContainerBuilder $container
      */
@@ -61,14 +66,14 @@ class SgDatatablesExtension extends Extension implements CompilerPassInterface
 
         // add datatables
         foreach ($datatableServices as $key => $value) {
-            $definition->addMethodCall('addDatatable', [
+            $definition->addMethodCall('addAndBuildDatatable', [
                 new Reference($key)
             ]);
         }
 
         // add columns to datatables
         foreach ($columnServices as $key => $value) {
-            $definition->addMethodCall('addColumn', [
+            $definition->addMethodCall('addAndBuildColumnToDatatable', [
                 new Reference($key)
             ]);
         }

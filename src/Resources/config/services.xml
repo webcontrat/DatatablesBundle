@@ -14,12 +14,6 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-
-        <!--
-         ! [NOTE] The "Sg\DatatablesBundle\Twig\DatatableTwigExtension" service or alias has been removed or inlined when the
-         !        container was compiled.
-        -->
-
         <!--suppress TaggedExtendsInterfaceClass -->
         <service id="sg_datatables.twig.datatable_twig_extension"
                  class="Sg\DatatablesBundle\Twig\DatatableTwigExtension">

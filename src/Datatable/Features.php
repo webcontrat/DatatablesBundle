@@ -10,6 +10,7 @@
 
 namespace Sg\DatatablesBundle\Datatable;
 
+use Exception;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -392,13 +393,18 @@ class Features
     {
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
-        $this->callingSettersWithOptions($resolver->resolve($features));
+        try {
+            $this->callingSettersWithOptions($resolver->resolve($features));
+        } catch (Exception $e) {
+        }
     }
 
     /**
      * Calls the Setter of each Feature.
      *
      * @param array $features
+     *
+     * @throws Exception
      */
     private function callingSettersWithOptions(array $features): void
     {
@@ -406,8 +412,7 @@ class Features
             if ($this->accessor->isWritable($this, $setter)) {
                 $this->accessor->setValue($this, $setter, $value);
             } else {
-                // todo: exception
-                return;
+                throw new Exception("Some unexpected error occured.");
             }
         }
     }

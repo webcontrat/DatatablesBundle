@@ -14,7 +14,7 @@ use Sg\DatatablesBundle\Datatable\DatatableInterface;
 
 interface ColumnInterface
 {
-    public function buildColumn();
+    public function buildColumn(): void;
     public function setDatatable(DatatableInterface $datatable): void;
     public function getDatatableId(): string;
 }

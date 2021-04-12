@@ -10,6 +10,7 @@
 
 namespace Sg\DatatablesBundle\Datatable;
 
+use Exception;
 use JsonSerializable;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -163,13 +164,18 @@ class Ajax implements JsonSerializable
     {
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
-        $this->callingSettersWithOptions($resolver->resolve($options));
+        try {
+            $this->callingSettersWithOptions($resolver->resolve($options));
+        } catch (Exception $e) {
+        }
     }
 
     /**
      * Calls the Setter of each option.
      *
      * @param array $options
+     *
+     * @throws Exception
      */
     private function callingSettersWithOptions(array $options): void
     {
@@ -177,8 +183,7 @@ class Ajax implements JsonSerializable
             if ($this->accessor->isWritable($this, $setter)) {
                 $this->accessor->setValue($this, $setter, $value);
             } else {
-                // todo: exception
-                return;
+                throw new Exception("Some unexpected error occured.");
             }
         }
     }
