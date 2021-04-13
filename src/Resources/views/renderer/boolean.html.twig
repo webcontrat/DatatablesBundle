@@ -6,16 +6,8 @@
  # License: MIT
  #}
 
-{% if is_bold == true %}
-<b>
-{% endif %}
-{% if is_italic == true %}
-<i>
-{% endif %}
-{{ value }}
-{% if is_bold == true %}
-</b>
-{% endif %}
-{% if is_italic == true %}
-</i>
+{% if invalid_value is same as(false) %}
+    <span class="{{ class }}">{{ result }}</span>
+{% else %}
+    <b><i>invalid value</i></b>
 {% endif %}

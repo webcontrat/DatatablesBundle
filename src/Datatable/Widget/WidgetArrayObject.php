@@ -11,8 +11,12 @@
 namespace Sg\DatatablesBundle\Datatable\Widget;
 
 use ArrayObject;
-use InvalidArgumentException;
 
+/**
+ * Class WidgetArrayObject
+ *
+ * @package Sg\DatatablesBundle\Datatable\Widget
+ */
 class WidgetArrayObject extends ArrayObject
 {
     //-------------------------------------------------
@@ -29,18 +33,5 @@ class WidgetArrayObject extends ArrayObject
         parent::__construct($widgets);
 
         $this->setIteratorClass(WidgetArrayIterator::class);
-    }
-
-    /**
-     * @param mixed $key
-     * @param mixed $value
-     */
-    public function offsetSet($key, $value): void
-    {
-        if ($value instanceof WidgetInterface) {
-            parent::offsetSet($key, $value);
-        } else {
-            throw new InvalidArgumentException('Value must be a WidgetInterface.');
-        }
     }
 }

@@ -31,6 +31,6 @@ class DatatableArrayIterator extends ArrayIterator
      */
     public function current(): DatatableInterface
     {
-        parent::current();
+        return parent::current();
     }
 }

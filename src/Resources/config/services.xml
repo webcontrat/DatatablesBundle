@@ -28,12 +28,20 @@
         </service>
         <service id="Sg\DatatablesBundle\Datatables\Datatables" alias="sg_datatables.datatables.datatables" />
 
-        <!-- DummyRenderer -->
-        <service id="sg_datatables.datatable_renderer.dummy_renderer"
-                 class="Sg\DatatablesBundle\Datatable\Renderer\DummyRenderer"
+        <!-- BooleanRenderer -->
+        <service id="sg_datatables.datatable_renderer.boolean_renderer"
+                 class="Sg\DatatablesBundle\Datatable\Renderer\BooleanRenderer"
         />
-        <service id="Sg\DatatablesBundle\Datatable\Renderer\DummyRenderer"
-                 alias="sg_datatables.datatable_renderer.dummy_renderer"
+        <service id="Sg\DatatablesBundle\Datatable\Renderer\BooleanRenderer"
+                 alias="sg_datatables.datatable_renderer.boolean_renderer"
+        />
+
+        <!-- HtmlFormatRenderer -->
+        <service id="sg_datatables.datatable_renderer.html_format_renderer"
+                 class="Sg\DatatablesBundle\Datatable\Renderer\HtmlFormatRenderer"
+        />
+        <service id="Sg\DatatablesBundle\Datatable\Renderer\HtmlFormatRenderer"
+                 alias="sg_datatables.datatable_renderer.html_format_renderer"
         />
 
     </services>

@@ -11,7 +11,6 @@
 namespace Sg\DatatablesBundle\Datatable\Renderer;
 
 use Sg\DatatablesBundle\Datatable\Column\ColumnInterface;
-use Sg\DatatablesBundle\Datatable\Widget\WidgetArrayObject;
 
 /**
  * Interface RendererInterface
@@ -20,7 +19,5 @@ use Sg\DatatablesBundle\Datatable\Widget\WidgetArrayObject;
  */
 interface RendererInterface
 {
-    public function checkForWidgetTypes(WidgetArrayObject $widgets): void;
     public function renderColumn(ColumnInterface $column, $rawValue): string;
-    public function getWidgetTypes(): array;
 }

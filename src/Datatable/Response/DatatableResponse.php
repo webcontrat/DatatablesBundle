@@ -55,8 +55,8 @@ class DatatableResponse
 
         foreach ($data[$dataScr ?? 'data'] as &$row) {
             foreach ($this->datatable->getColumns() as $column) {
-                if ($column->getRenderer()) {
-                    $this->processRenderer($column, $row);
+                if (!empty($column->getRenderer())) {
+                    $this->processAllRenderer($column, $row);
                 }
             }
         }
@@ -70,13 +70,14 @@ class DatatableResponse
      * @param ColumnInterface $column
      * @param array $row
      */
-    private function processRenderer(ColumnInterface $column, array &$row): void
+    private function processAllRenderer(ColumnInterface $column, array &$row): void
     {
         $idx = $column->getDql();
-        $renderer = $column->getRenderer();
 
-        $rawValue = $row[$idx];
-        $newValue = $renderer->renderColumn($column, $rawValue);
-        $row[$idx] = $newValue;
+        foreach ($column->getRenderer() as $renderer) {
+            $rawValue = $row[$idx];
+            $newValue = $renderer->renderColumn($column, $rawValue);
+            $row[$idx] = $newValue;
+        }
     }
 }

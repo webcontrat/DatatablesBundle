@@ -10,55 +10,39 @@
 
 namespace Sg\DatatablesBundle\Datatable\Widget;
 
+/**
+ * Class HtmlFormatWidget
+ *
+ * @package Sg\DatatablesBundle\Datatable\Widget
+ */
 class HtmlFormatWidget extends AbstractWidget
 {
     /**
-     * @var bool
+     * @var array
      */
-    private bool $bold = false;
-
-    /**
-     * @var bool
-     */
-    private bool $italic = false;
-
-    //-------------------------------------------------
-    // Getter
-    //-------------------------------------------------
-
-    /**
-     * @return bool
-     */
-    public function isBold(): bool
-    {
-        return $this->bold;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isItalic(): bool
-    {
-        return $this->italic;
-    }
+    private array $tags = [];
 
     //-------------------------------------------------
     // Setter
     //-------------------------------------------------
 
     /**
-     * @param bool $bold
+     * @param string $tag
      */
-    public function setBold(bool $bold): void
+    public function addTag(string $tag): void
     {
-        $this->bold = $bold;
+        $this->tags[] = $tag;
     }
 
+    //-------------------------------------------------
+    // Getter
+    //-------------------------------------------------
+
     /**
-     * @param bool $italic
+     * @return array
      */
-    public function setItalic(bool $italic): void
+    public function getTags(): array
     {
-        $this->italic = $italic;
+        return $this->tags;
     }
 }

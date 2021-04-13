@@ -10,17 +10,47 @@
 
 namespace Sg\DatatablesBundle\Datatable\Widget;
 
+/**
+ * Class BooleanWidget
+ *
+ * @package Sg\DatatablesBundle\Datatable\Widget
+ */
 class BooleanWidget extends AbstractWidget
 {
     /**
+     * The label for a value that is true.
+     *
      * @var string
      */
-    private string $trueLabel = 'True';
+    private string $trueLabel = 'true';
 
     /**
+     * The label for a value that is false.
+     *
      * @var string
      */
-    private string $falseLabel = 'False';
+    private string $falseLabel = 'false';
+
+    /**
+     * The icon for a value that is true.
+     *
+     * @var string
+     */
+    private string $trueIcon = '';
+
+    /**
+     * The icon for a value that is false.
+     *
+     * @var string
+     */
+    private string $falseIcon = '';
+
+    /**
+     * Prefer icons for rendering.
+     *
+     * @var bool
+     */
+    private bool $preferIcons = false;
 
     //-------------------------------------------------
     // Getter
@@ -42,6 +72,30 @@ class BooleanWidget extends AbstractWidget
         return $this->falseLabel;
     }
 
+    /**
+     * @return string
+     */
+    public function getTrueIcon(): string
+    {
+        return $this->trueIcon;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFalseIcon(): string
+    {
+        return $this->falseIcon;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPreferIcons(): bool
+    {
+        return $this->preferIcons;
+    }
+
     //-------------------------------------------------
     // Setter
     //-------------------------------------------------
@@ -60,5 +114,29 @@ class BooleanWidget extends AbstractWidget
     public function setFalseLabel(string $falseLabel): void
     {
         $this->falseLabel = $falseLabel;
+    }
+
+    /**
+     * @param string $trueIcon
+     */
+    public function setTrueIcon(string $trueIcon): void
+    {
+        $this->trueIcon = $trueIcon;
+    }
+
+    /**
+     * @param string $falseIcon
+     */
+    public function setFalseIcon(string $falseIcon): void
+    {
+        $this->falseIcon = $falseIcon;
+    }
+
+    /**
+     * @param bool $preferIcons
+     */
+    public function setPreferIcons(bool $preferIcons): void
+    {
+        $this->preferIcons = $preferIcons;
     }
 }

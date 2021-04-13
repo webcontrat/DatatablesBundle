@@ -13,6 +13,11 @@ namespace Sg\DatatablesBundle\Datatable\Column;
 use ArrayObject;
 use JsonSerializable;
 
+/**
+ * Class ColumnArrayObject
+ *
+ * @package Sg\DatatablesBundle\Datatable\Column
+ */
 class ColumnArrayObject extends ArrayObject implements JsonSerializable
 {
     //-------------------------------------------------

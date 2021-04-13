@@ -44,12 +44,13 @@ abstract class AbstractColumn implements ColumnInterface, JsonSerializable
      */
     private WidgetArrayObject $widgets;
 
+    // todo
     /**
-     * An optional renderer that changes the raw content.
+     * One or more renderers that can modify the raw content.
      *
-     * @var RendererInterface|null
+     * @var RendererInterface[]
      */
-    private ?RendererInterface $renderer = null;
+    private array $renderer = [];
 
     //-------------------------------------------------
     // Ctor.
@@ -117,11 +118,11 @@ abstract class AbstractColumn implements ColumnInterface, JsonSerializable
     }
 
     /**
-     * @param RendererInterface|null $renderer
+     * @param RendererInterface $renderer
      */
-    public function setRenderer(?RendererInterface $renderer): void
+    public function addRenderer(RendererInterface $renderer): void
     {
-        $this->renderer = $renderer;
+        $this->renderer[] = $renderer;
     }
 
     //-------------------------------------------------
@@ -137,9 +138,9 @@ abstract class AbstractColumn implements ColumnInterface, JsonSerializable
     }
 
     /**
-     * @return RendererInterface|null
+     * @return array
      */
-    public function getRenderer(): ?RendererInterface
+    public function getRenderer(): array
     {
         return $this->renderer;
     }

@@ -10,9 +10,6 @@
 
 namespace Sg\DatatablesBundle\Datatable\Renderer;
 
-use Exception;
-use Sg\DatatablesBundle\Datatable\Widget\WidgetArrayObject;
-
 /**
  * Class AbstractRenderer
  *
@@ -20,21 +17,4 @@ use Sg\DatatablesBundle\Datatable\Widget\WidgetArrayObject;
  */
 abstract class AbstractRenderer implements RendererInterface
 {
-    //-------------------------------------------------
-    // Implement RendererInterface
-    //-------------------------------------------------
-
-    /**
-     * @param WidgetArrayObject $widgets
-     *
-     * @throws Exception
-     */
-    public function checkForWidgetTypes(WidgetArrayObject $widgets): void
-    {
-        foreach ($this->getWidgetTypes() as $widgetType) {
-            if (!$widgets->offsetExists($widgetType)) {
-                throw new Exception('Missing Widget');
-            }
-        }
-    }
 }

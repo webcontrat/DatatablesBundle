@@ -12,6 +12,11 @@ namespace Sg\DatatablesBundle\Datatable\Widget;
 
 use ArrayIterator;
 
+/**
+ * Class WidgetArrayIterator
+ *
+ * @package Sg\DatatablesBundle\Datatable\Widget
+ */
 class WidgetArrayIterator extends ArrayIterator
 {
     //-------------------------------------------------
@@ -19,7 +24,9 @@ class WidgetArrayIterator extends ArrayIterator
     //-------------------------------------------------
 
     /**
-     * @return WidgetInterface
+     * Return current array entry.
+     *
+     * @return WidgetInterface The current array entry.
      */
     public function current(): WidgetInterface
     {

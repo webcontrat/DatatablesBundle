@@ -12,6 +12,11 @@ namespace Sg\DatatablesBundle\Datatable\Column;
 
 use ArrayIterator;
 
+/**
+ * Class ColumnArrayIterator
+ *
+ * @package Sg\DatatablesBundle\Datatable\Column
+ */
 class ColumnArrayIterator extends ArrayIterator
 {
     //-------------------------------------------------
@@ -19,7 +24,9 @@ class ColumnArrayIterator extends ArrayIterator
     //-------------------------------------------------
 
     /**
-     * @return ColumnInterface
+     * Return current array entry.
+     *
+     * @return ColumnInterface The current array entry.
      */
     public function current(): ColumnInterface
     {
