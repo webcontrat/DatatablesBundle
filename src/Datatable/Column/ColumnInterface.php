@@ -11,6 +11,7 @@
 namespace Sg\DatatablesBundle\Datatable\Column;
 
 use Sg\DatatablesBundle\Datatable\DatatableInterface;
+use Sg\DatatablesBundle\Datatable\Renderer\RendererArrayObject;
 
 /**
  * Interface ColumnInterface
@@ -21,6 +22,6 @@ interface ColumnInterface
 {
     public function buildColumn(): void;
     public function setDatatable(DatatableInterface $datatable): void;
-    public function getRenderer(): array;
+    public function getRenderer(): RendererArrayObject;
     public function getDatatableId(): string;
 }

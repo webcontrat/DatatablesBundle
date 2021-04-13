@@ -13,6 +13,7 @@ namespace Sg\DatatablesBundle\Datatable\Column;
 use InvalidArgumentException;
 use JsonSerializable;
 use Sg\DatatablesBundle\Datatable\DatatableInterface;
+use Sg\DatatablesBundle\Datatable\Renderer\RendererArrayObject;
 use Sg\DatatablesBundle\Datatable\Renderer\RendererInterface;
 use Sg\DatatablesBundle\Datatable\Widget\WidgetArrayObject;
 use Sg\DatatablesBundle\Datatable\Widget\WidgetInterface;
@@ -44,13 +45,12 @@ abstract class AbstractColumn implements ColumnInterface, JsonSerializable
      */
     private WidgetArrayObject $widgets;
 
-    // todo
     /**
      * One or more renderers that can modify the raw content.
      *
-     * @var RendererInterface[]
+     * @var RendererArrayObject
      */
-    private array $renderer = [];
+    private RendererArrayObject $renderer;
 
     //-------------------------------------------------
     // Ctor.
@@ -62,6 +62,7 @@ abstract class AbstractColumn implements ColumnInterface, JsonSerializable
     public function __construct()
     {
         $this->widgets = new WidgetArrayObject();
+        $this->renderer = new RendererArrayObject();
     }
 
     //-------------------------------------------------
@@ -122,7 +123,7 @@ abstract class AbstractColumn implements ColumnInterface, JsonSerializable
      */
     public function addRenderer(RendererInterface $renderer): void
     {
-        $this->renderer[] = $renderer;
+        $this->renderer->append($renderer);
     }
 
     //-------------------------------------------------
@@ -138,9 +139,9 @@ abstract class AbstractColumn implements ColumnInterface, JsonSerializable
     }
 
     /**
-     * @return array
+     * @return RendererArrayObject
      */
-    public function getRenderer(): array
+    public function getRenderer(): RendererArrayObject
     {
         return $this->renderer;
     }

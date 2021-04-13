@@ -54,8 +54,11 @@ class DatatableResponse
         $dataScr = $this->datatable->getAjax()->getDataSrc();
 
         foreach ($data[$dataScr ?? 'data'] as &$row) {
+            /**
+             * @var ColumnInterface $column
+             */
             foreach ($this->datatable->getColumns() as $column) {
-                if (!empty($column->getRenderer())) {
+                if ($column->getRenderer()->count() != 0) {
                     $this->processAllRenderer($column, $row);
                 }
             }
@@ -75,8 +78,11 @@ class DatatableResponse
         $idx = $column->getDql();
 
         foreach ($column->getRenderer() as $renderer) {
+            // get raw value
             $rawValue = $row[$idx];
+            // apply renderer
             $newValue = $renderer->renderColumn($column, $rawValue);
+            // store changed value
             $row[$idx] = $newValue;
         }
     }
