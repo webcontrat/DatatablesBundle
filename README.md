@@ -10,12 +10,18 @@ $data =
         'data' =>
             [
                 [
-                    'name' => 'Tiger',
-                    'position' => false
+                    'title' => 'Article example',
+                    'slug' => 'first-example',
+                    'content' => 'Lorem Ipsum is simply placeholder.',
+                    'approved' => true,
+                    'createdAt' => '2021-04-13'
                 ],
                 [
-                    'name' => '',
-                    'position' => 'Worker'
+                    'title' => 'Next example',
+                    'slug' => 'next-example',
+                    'content' => 'Lorem Ipsum is simply placeholder.',
+                    'approved' => 0,
+                    'createdAt' => '2021-04-19'
                 ]
             ]
     ];
@@ -26,15 +32,18 @@ The following setup is currently used to display a table:
 ```bash
 /src
     |--Columns
-    |----Post
-    |------NameColumn.php
-    |------PositionColumn.php
+    |----Article
+    |------ApprovedColumn.php
+    |------ContentColumn.php
+    |------CreatedAtColumn.php
+    |------SlugColumn.php
+    |------TitleColumn.php
     |--Controller
-    |----PostController.php
+    |----ArticleController.php
     |--Datatables
-    |----PostDatatable.php
+    |----ArticleDatatable.php
 /templates
-    |--post
+    |--article
     |----index.html.twig
     |--base.html.twig
 ```
@@ -53,48 +62,54 @@ App\Columns\:
     tags: ['sg_datatable_column']
 ```
 
-The columns are configured with widgets and a renderer. See example:
+Widgets can be added to the columns, which are displayed with one or more renderers. Example:
 
 ```php
-// src/Columns/Post/PositionColumn.php
+// src/Columns/Article/ApprovedColumn.php
 
-namespace App\Columns\Post;
+namespace App\Columns\Article;
 
 use Sg\DatatablesBundle\Datatable\Column\AbstractColumn;
-use Sg\DatatablesBundle\Datatable\Renderer\DummyRenderer;
+use Sg\DatatablesBundle\Datatable\Renderer\BooleanRenderer;
+use Sg\DatatablesBundle\Datatable\Renderer\HtmlFormatRenderer;
 use Sg\DatatablesBundle\Datatable\Widget\BooleanWidget;
 use Sg\DatatablesBundle\Datatable\Widget\HtmlFormatWidget;
 
-class PositionColumn extends AbstractColumn
+class ApprovedColumn extends AbstractColumn
 {
-    private DummyRenderer $renderer;
+    private BooleanRenderer $booleanRenderer;
+    private HtmlFormatRenderer $htmlFormatRenderer;
 
-    public function __construct(DummyRenderer $renderer)
+    public function __construct(BooleanRenderer $booleanRenderer, HtmlFormatRenderer $htmlFormatRenderer)
     {
-        $this->renderer = $renderer;
+        $this->booleanRenderer = $booleanRenderer;
+        $this->htmlFormatRenderer = $htmlFormatRenderer;
 
         parent::__construct();
     }
 
     public function buildColumn(): void
     {
-        $this->setDql('position');
+        $this->setDql('approved');
 
         $bw = new BooleanWidget();
-        $bw->setTrueLabel('custom True label');
+        $bw->setTrueLabel('approved');
+        $bw->setFalseLabel('not approved');
         $this->addWidget($bw);
 
         $hw = new HtmlFormatWidget();
-        $hw->setBold(true);
-        $hw->setItalic(true);
+        $hw->addTag('b');
+        $hw->addTag('i');
+        $hw->addTag('u');
         $this->addWidget($hw);
 
-        $this->setRenderer($this->renderer);
+        $this->addRenderer($this->booleanRenderer);
+        $this->addRenderer($this->htmlFormatRenderer);
     }
 
     public function getDatatableId(): string
     {
-        return 'post';
+        return 'article';
     }
 }
 ```
@@ -102,13 +117,13 @@ class PositionColumn extends AbstractColumn
 The Datatable currently only configures the path to generate a response.
 
 ```php
-// src/Datatables/PostDatatable.php
+// src/Datatables/ArticleDatatable.php
 
 namespace App\Datatables;
 
 use Sg\DatatablesBundle\Datatable\AbstractDatatable;
 
-class PostDatatable extends AbstractDatatable
+class ArticleDatatable extends AbstractDatatable
 {
     public function buildDatatable(): void
     {
@@ -128,14 +143,14 @@ class PostDatatable extends AbstractDatatable
         ]);
 
         $this->getAjax()->set([
-            'url' => $this->getRouter()->generate('table_content'),
+            'url' => $this->getRouter()->generate('article_table_content'),
             'type' => 'POST'
         ]);
     }
 
     public function getId(): string
     {
-        return 'post';
+        return 'article';
     }
 }
 ```
@@ -143,7 +158,7 @@ class PostDatatable extends AbstractDatatable
 Now we need a controller with two actions:
 
 ```php
-// src/Controller/PostController.php
+// src/Controller/ArticleController.php
 
 namespace App\Controller;
 
@@ -154,19 +169,21 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PostController extends AbstractController
+class ArticleController extends AbstractController
 {
     /**
      * @Route("/")
+     *
      * @param Datatables $datatables
+     *
      * @return Response
      */
-    public function homepage(Datatables $datatables): Response
+    public function index(Datatables $datatables): Response
     {
-        $datatable = $datatables->getDatatableById('post');
+        $datatable = $datatables->getDatatableById('article');
 
         return $this->render(
-            'post/index.html.twig',
+            'article/index.html.twig',
             [
                 'datatable' => $datatable
             ]
@@ -174,7 +191,8 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/ajax", name="table_content", methods={"GET", "POST"})
+     * @Route("/articles", name="article_table_content", methods={"GET", "POST"})
+     *
      * @param Request $request
      * @param Datatables $datatables
      *
@@ -189,19 +207,23 @@ class PostController extends AbstractController
                 'data' =>
                     [
                         [
-                            'name' => 'Tiger',
-                            'position' => false
+                            'title' => 'Article example',
+                            'slug' => 'first-example',
+                            'content' => 'Lorem Ipsum is simply placeholder.',
+                            'approved' => true,
+                            'createdAt' => '2021-04-13'
                         ],
                         [
-                            'name' => '',
-                            'position' => 'Worker'
+                            'title' => 'Next example',
+                            'slug' => 'next-example',
+                            'content' => 'Lorem Ipsum is simply placeholder.',
+                            'approved' => 0,
+                            'createdAt' => '2021-04-19'
                         ]
                     ]
             ];
 
-        $jsonResponse = $datatables->handleResponse($data, 'post');
-
-        return $jsonResponse;
+        return $datatables->handleResponse($data, 'article');
     }
 }
 ```
