@@ -114,6 +114,45 @@ class ApprovedColumn extends AbstractColumn
 }
 ```
 
+
+```php
+// src/Columns/Article/CreatedAtColumn.php
+
+namespace App\Columns\Article;
+
+use Sg\DatatablesBundle\Datatable\Column\AbstractColumn;
+use Sg\DatatablesBundle\Datatable\Renderer\DateTimeRenderer;
+use Sg\DatatablesBundle\Datatable\Widget\DateTimeWidget;
+
+class CreatedAtColumn extends AbstractColumn
+{
+    private DateTimeRenderer $dateTimeRenderer;
+
+    public function __construct(DateTimeRenderer $dateTimeRenderer)
+    {
+        $this->dateTimeRenderer = $dateTimeRenderer;
+
+        parent::__construct();
+    }
+
+    public function buildColumn(): void
+    {
+        $this->setDql('createdAt');
+
+        $dateTimeWidget = new DateTimeWidget();
+        $dateTimeWidget->setFormat('l');
+        $this->addWidget($dateTimeWidget);
+
+        $this->addRenderer($this->dateTimeRenderer);
+    }
+
+    public function getDatatableId(): string
+    {
+        return 'article';
+    }
+}
+```
+
 The Datatable currently only configures the path to generate a response.
 
 ```php
