@@ -44,5 +44,13 @@
                  alias="sg_datatables.datatable_renderer.html_format_renderer"
         />
 
+        <!-- DateTimeRenderer -->
+        <service id="sg_datatables.datatable_renderer.date_time_renderer"
+                 class="Sg\DatatablesBundle\Datatable\Renderer\DateTimeRenderer"
+        />
+        <service id="Sg\DatatablesBundle\Datatable\Renderer\DateTimeRenderer"
+                 alias="sg_datatables.datatable_renderer.date_time_renderer"
+        />
+
     </services>
 </container>
