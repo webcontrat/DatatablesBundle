@@ -14,6 +14,7 @@ namespace Sg\DatatablesBundle\Datatable\Column;
 use Exception;
 use Sg\DatatablesBundle\Datatable\Column\ActionColumn;
 use Sg\DatatablesBundle\Datatable\Action\Action;
+use Sg\DatatablesBundle\Datatable\Helper;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DropdownActionColumn extends ActionColumn
