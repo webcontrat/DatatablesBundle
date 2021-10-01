@@ -39,3 +39,9 @@
 {% if sg_datatables_view.features.stateSave is not same as(null) %}
     "stateSave": {{ sg_datatables_view.features.stateSave|sg_datatables_bool_var }},
 {% endif %}
+{% if sg_datatables_view.features.serverSide is not same as(null) %}
+    "serverSide": {{ sg_datatables_view.features.serverSide|sg_datatables_bool_var }},
+{% else %}
+    "serverSide": true,
+{% endif %}
+
