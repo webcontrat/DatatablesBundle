@@ -38,7 +38,7 @@ class VirtualColumn extends Column
     /**
      * @return $this
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): static
     {
         parent::configureOptions($resolver);
 

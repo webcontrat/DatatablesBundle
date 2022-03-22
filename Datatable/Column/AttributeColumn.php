@@ -37,7 +37,7 @@ class AttributeColumn extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    public function renderSingleField(array &$row)
+    public function renderSingleField(array &$row): static
     {
         $renderAttributes = [];
 
@@ -54,12 +54,14 @@ class AttributeColumn extends AbstractColumn
         );
 
         $this->accessor->setValue($row, $path, $content);
+
+        return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderToMany(array &$row)
+    public function renderToMany(array &$row): static
     {
         $value = null;
         $path = Helper::getDataPropertyPath($this->data, $value);
@@ -124,7 +126,7 @@ class AttributeColumn extends AbstractColumn
     /**
      * @return $this
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): static
     {
         parent::configureOptions($resolver);
 

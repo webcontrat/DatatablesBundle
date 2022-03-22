@@ -67,8 +67,6 @@ interface ColumnInterface
     /**
      * Sometimes it is necessary to add some special data to the output array.
      * For example, the visibility of actions.
-     *
-     * @return $this
      */
     public function addDataToOutputArray(array &$row);
 
@@ -83,14 +81,14 @@ interface ColumnInterface
      *
      * @return $this
      */
-    public function renderSingleField(array &$row);
+    public function renderSingleField(array &$row): static;
 
     /**
      * Render toMany.
      *
      * @return $this
      */
-    public function renderToMany(array &$row);
+    public function renderToMany(array &$row): static;
 
     /**
      * Get the template for the 'renderCellContent' function.
