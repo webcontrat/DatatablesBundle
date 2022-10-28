@@ -76,7 +76,7 @@ class MultiselectColumn extends ActionColumn
     /**
      * {@inheritdoc}
      */
-    public function addDataToOutputArray(array &$row)
+    public function addDataToOutputArray(array &$row): void
     {
         $row['sg_datatables_cbox'] = $this->callRenderIfClosure($row);
     }
@@ -84,7 +84,7 @@ class MultiselectColumn extends ActionColumn
     /**
      * {@inheritdoc}
      */
-    public function renderSingleField(array &$row)
+    public function renderSingleField(array &$row): static
     {
         $value = $row[$this->value];
 
@@ -106,6 +106,8 @@ class MultiselectColumn extends ActionColumn
                 'render_if_cbox' => $row['sg_datatables_cbox'],
             ]
         );
+
+        return $this;
     }
 
     /**
@@ -141,7 +143,7 @@ class MultiselectColumn extends ActionColumn
      *
      * @return $this
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): static
     {
         parent::configureOptions($resolver);
 

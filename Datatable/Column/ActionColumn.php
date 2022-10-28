@@ -57,7 +57,7 @@ class ActionColumn extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    public function addDataToOutputArray(array &$row)
+    public function addDataToOutputArray(array &$row): void
     {
         $actionRowItems = [];
 
@@ -76,7 +76,7 @@ class ActionColumn extends AbstractColumn
      *
      * @return array
      */
-    protected function getCellContentTemplateVars(array $row)
+    protected function getCellContentTemplateVars(array $row): array
     {
         $parameters = [];
         $attributes = [];
@@ -150,18 +150,20 @@ class ActionColumn extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    public function renderSingleField(array &$row)
+    public function renderSingleField(array &$row): static
     {
         $row[$this->getIndex()] = $this->twig->render(
             $this->getCellContentTemplate(),
             $this->getCellContentTemplateVars($row)
         );
+
+        return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderToMany(array &$row)
+    public function renderToMany(array &$row): static
     {
         throw new Exception('ActionColumn::renderToMany(): This function should never be called.');
     }
@@ -189,7 +191,7 @@ class ActionColumn extends AbstractColumn
     /**
      * @return $this
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): static
     {
         parent::configureOptions($resolver);
 

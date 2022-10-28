@@ -311,7 +311,7 @@ abstract class AbstractColumn implements ColumnInterface
     /**
      * @return $this
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): static
     {
         // 'dql' and 'data' options need no default value
         $resolver->setDefined(['dql', 'data']);
@@ -432,9 +432,8 @@ abstract class AbstractColumn implements ColumnInterface
     /**
      * {@inheritdoc}
      */
-    public function addDataToOutputArray(array &$row)
+    public function addDataToOutputArray(array &$row): void
     {
-        return null;
     }
 
     /**

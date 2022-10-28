@@ -30,7 +30,7 @@ class Column extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    public function renderSingleField(array &$row)
+    public function renderSingleField(array &$row): static
     {
         $path = Helper::getDataPropertyPath($this->data);
 
@@ -47,7 +47,7 @@ class Column extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    public function renderToMany(array &$row)
+    public function renderToMany(array &$row): static
     {
         $value = null;
         $path = Helper::getDataPropertyPath($this->data, $value);
@@ -117,7 +117,7 @@ class Column extends AbstractColumn
     /**
      * @return $this
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): static
     {
         parent::configureOptions($resolver);
 
