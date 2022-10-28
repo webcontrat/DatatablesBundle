@@ -52,7 +52,7 @@ class DropdownActionColumn extends ActionColumn
     /**
      * {@inheritdoc}
      */
-    public function getCellContentTemplateVars(array $row)
+    protected function getCellContentTemplateVars(array $row): array
     {
         $vars = parent::getCellContentTemplateVars($row);
 
