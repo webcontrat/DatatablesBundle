@@ -33,7 +33,7 @@ class DropdownActionColumn extends ActionColumn
     /**
      * {@inheritdoc}
      */
-    public function addDataToOutputArray(array &$row)
+    public function addDataToOutputArray(array &$row): void
     {
         parent::addDataToOutputArray($row);
         

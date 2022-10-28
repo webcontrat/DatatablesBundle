@@ -68,7 +68,7 @@ interface ColumnInterface
      * Sometimes it is necessary to add some special data to the output array.
      * For example, the visibility of actions.
      */
-    public function addDataToOutputArray(array &$row);
+    public function addDataToOutputArray(array &$row): void;
 
     /**
      * Render images or any other special content.
