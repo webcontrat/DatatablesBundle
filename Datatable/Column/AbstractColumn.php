@@ -394,7 +394,7 @@ abstract class AbstractColumn implements ColumnInterface
      */
     public function isAssociation()
     {
-        return false === strstr($this->dql, '.') ? false : true;
+        return false === strstr($this->dql??'', '.') ? false : true;
     }
 
     /**
