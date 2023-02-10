@@ -36,61 +36,59 @@ class DatatableQueryBuilder
     /**
      * @internal
      */
-    const DISABLE_PAGINATION = -1;
+    public const DISABLE_PAGINATION = -1;
 
     /**
      * @internal
      */
-    const INIT_PARAMETER_COUNTER = 100;
+    public const INIT_PARAMETER_COUNTER = 100;
 
     /**
      * $_GET or $_POST parameters.
      *
      * @var array
      */
-    private $requestParams;
+    protected $requestParams;
 
     /**
      * The EntityManager.
      *
      * @var EntityManagerInterface
      */
-    private $em;
+    protected $em;
 
     /**
      * The name of the entity.
      *
      * @var string
      */
-    private $entityName;
+    protected $entityName;
 
     /**
      * The short name of the entity.
      *
      * @var string
      */
-    private $entityShortName;
+    protected $entityShortName;
 
     /**
      * The class metadata for $entityName.
      *
      * @var ClassMetadata
      */
-    private $metadata;
+    protected $metadata;
 
     /**
      * The root ID of the entity.
-     *
-     * @var mixed
      */
-    private $rootEntityIdentifier;
+    protected $rootEntityIdentifier;
 
     /**
      * The QueryBuilder.
      *
      * @var QueryBuilder
      */
-    private $qb;
+    protected $qb;
 
     /**
      * The PropertyAccessor.
@@ -98,63 +96,63 @@ class DatatableQueryBuilder
      *
      * @var PropertyAccessor
      */
-    private $accessor;
+    protected $accessor;
 
     /**
      * All Columns of the Datatable.
      *
      * @var array
      */
-    private $columns;
+    protected $columns;
 
     /**
      * Contains all Columns to create a SELECT FROM statement.
      *
      * @var array
      */
-    private $selectColumns;
+    protected $selectColumns;
 
     /**
      * Contains an information for each Column, whether to search in it.
      *
      * @var array
      */
-    private $searchColumns;
+    protected $searchColumns;
 
     /**
      * Contains an information about each column, whether it is sortable.
      *
      * @var array
      */
-    private $orderColumns;
+    protected $orderColumns;
 
     /**
      * Contains all informations to create joins.
      *
      * @var array
      */
-    private $joins;
+    protected $joins;
 
     /**
      * The Datatable Options instance.
      *
      * @var Options
      */
-    private $options;
+    protected $options;
 
     /**
      * The Datatable Features instance.
      *
      * @var Features
      */
-    private $features;
+    protected $features;
 
     /**
      * The Datatable Ajax instance.
      *
      * @var Ajax
      */
-    private $ajax;
+    protected $ajax;
 
     /**
      * Flag indicating state of query cache for records retrieval. This value is passed to Query object when it is
@@ -162,28 +160,28 @@ class DatatableQueryBuilder
      *
      * @var bool
      */
-    private $useQueryCache = false;
+    protected $useQueryCache = false;
     /**
      * Flag indicating state of query cache for records counting. This value is passed to Query object when it is
      * created. Default value is false.
      *
      * @var bool
      */
-    private $useCountQueryCache = false;
+    protected $useCountQueryCache = false;
     /**
      * Arguments to pass when configuring result cache on query for records retrieval. Those arguments are used when
      * calling useResultCache method on Query object when one is created.
      *
      * @var array
      */
-    private $useResultCacheArgs = [false];
+    protected $useResultCacheArgs = [false];
     /**
      * Arguments to pass when configuring result cache on query for counting records. Those arguments are used when
      * calling useResultCache method on Query object when one is created.
      *
      * @var array
      */
-    private $useCountResultCacheArgs = [false];
+    protected $useCountResultCacheArgs = [false];
 
     //-------------------------------------------------
     // Ctor. && Init column arrays
@@ -380,7 +378,7 @@ class DatatableQueryBuilder
      *
      * @return $this
      */
-    private function initColumnArrays()
+    protected function initColumnArrays()
     {
         foreach ($this->columns as $key => $column) {
             $dql = $this->accessor->getValue($column, 'dql');
@@ -403,6 +401,7 @@ class DatatableQueryBuilder
                 $this->addSearchColumn($column, null, $searchDql);
             } elseif (true === $this->accessor->getValue($column, 'selectColumn')) {
                 $parts = explode('.', $dql);
+                $withExpr = $this->accessor->getValue($column, 'joinConditions');
 
                 while (\count($parts) > 1) {
                     $previousPart = $currentPart;
@@ -412,8 +411,14 @@ class DatatableQueryBuilder
                     $currentAlias = ($previousPart === $this->entityShortName ? '' : $previousPart.'_').$currentPart;
                     $currentAlias = $this->getSafeName($currentAlias);
 
-                    if (! \array_key_exists($previousAlias.'.'.$currentPart, $this->joins)) {
-                        $this->addJoin($previousAlias.'.'.$currentPart, $currentAlias, $this->accessor->getValue($column, 'joinType'));
+                    $columnTableName = $previousAlias.'.'.$currentPart;
+                    if (!array_key_exists($columnTableName, $this->joins)) {
+                        $this->addJoin($columnTableName, $currentAlias, $this->accessor->getValue($column, 'joinType'));
+                    }
+                    // for the last dql part join using WITH, if expression is given for column
+                    if (count($parts) === 1 && array_key_exists($columnTableName, $this->joins) && null !== $withExpr) {
+                        $with = str_replace($currentPart . '.', $currentAlias . '.', $withExpr);
+                        $this->addJoin($columnTableName, $currentAlias, $this->accessor->getValue($column, 'joinType'), $with);
                     }
 
                     $metadata = $this->setIdentifierFromAssociation($currentAlias, $currentPart, $metadata);
@@ -429,7 +434,7 @@ class DatatableQueryBuilder
                     foreach ($orderColumns as $orderColumn) {
                         $orderParts = explode('.', $orderColumn);
                         if (\count($orderParts) < 2) {
-                            if (!isset($this->columnNames[$orderColumn]) || null == $this->accessor->getValue($this->columns[$this->columnNames[$orderColumn]], 'customDql')) {
+                            if (! isset($this->columnNames[$orderColumn]) || null === $this->accessor->getValue($this->columns[$this->columnNames[$orderColumn]], 'customDql')) {
                                 $orderColumn = $this->entityShortName.'.'.$orderColumn;
                             }
                         }
@@ -445,7 +450,7 @@ class DatatableQueryBuilder
                     foreach ($searchColumns as $searchColumn) {
                         $searchParts = explode('.', $searchColumn);
                         if (\count($searchParts) < 2) {
-                            $searchColumn = $this->entityShortName . '.' . $searchColumn;
+                            $searchColumn = $this->entityShortName.'.'.$searchColumn;
                         }
                         $this->searchColumns[$key][] = $searchColumn;
                     }
@@ -459,7 +464,7 @@ class DatatableQueryBuilder
     }
 
     //-------------------------------------------------
-    // Private/Public - Setup query
+    // protected/Public - Setup query
     //-------------------------------------------------
 
     /**
@@ -467,7 +472,7 @@ class DatatableQueryBuilder
      *
      * @return $this
      */
-    private function setSelectFrom(QueryBuilder $qb)
+    protected function setSelectFrom(QueryBuilder $qb)
     {
         foreach ($this->selectColumns as $key => $value) {
             if (false === empty($key)) {
@@ -483,10 +488,14 @@ class DatatableQueryBuilder
     /**
      * @return $this
      */
-    private function setJoins(QueryBuilder $qb)
+    protected function setJoins(QueryBuilder $qb)
     {
         foreach ($this->joins as $key => $value) {
-            $qb->{$value['type']}($key, $value['alias']);
+            if (\array_key_exists('with', $value) && null !== $value['with']) {
+                $qb->{$value['type']}($key, $value['alias'], Query\Expr\Join::WITH, $value['with']);
+            } else {
+                $qb->{$value['type']}($key, $value['alias']);
+            }
         }
 
         return $this;
@@ -498,7 +507,7 @@ class DatatableQueryBuilder
      *
      * @return $this
      */
-    private function setWhere(QueryBuilder $qb)
+    protected function setWhere(QueryBuilder $qb)
     {
         // global filtering
         if (isset($this->requestParams['search']) && '' !== $this->requestParams['search']['value']) {
@@ -566,7 +575,7 @@ class DatatableQueryBuilder
      *
      * @return $this
      */
-    private function setOrderBy(QueryBuilder $qb)
+    protected function setOrderBy(QueryBuilder $qb)
     {
         if (isset($this->requestParams['order']) && \count($this->requestParams['order'])) {
             $counter = \count($this->requestParams['order']);
@@ -597,7 +606,7 @@ class DatatableQueryBuilder
      *
      * @return $this
      */
-    private function setLimit(QueryBuilder $qb)
+    protected function setLimit(QueryBuilder $qb)
     {
         if (true === $this->features->getPaging() || null === $this->features->getPaging()) {
             if (isset($this->requestParams['start']) && self::DISABLE_PAGINATION !== (int) $this->requestParams['length']) {
@@ -611,7 +620,7 @@ class DatatableQueryBuilder
     }
 
     //-------------------------------------------------
-    // Private - Helper
+    // protected - Helper
     //-------------------------------------------------
 
     /**
@@ -627,7 +636,7 @@ class DatatableQueryBuilder
      *
      * @return ClassMetadata
      */
-    private function setIdentifierFromAssociation($association, $key, $metadata = null)
+    protected function setIdentifierFromAssociation($association, $key, $metadata = null)
     {
         if (null === $metadata) {
             $metadata = $this->metadata;
@@ -648,7 +657,7 @@ class DatatableQueryBuilder
      *
      * @return $this
      */
-    private function addSelectColumn($columnTableName, $data)
+    protected function addSelectColumn($columnTableName, $data)
     {
         if (isset($this->selectColumns[$columnTableName])) {
             if (! \in_array($data, $this->selectColumns[$columnTableName], true)) {
@@ -670,7 +679,7 @@ class DatatableQueryBuilder
      *
      * @return $this
      */
-    private function addOrderColumn($column, $columnTableName, $data)
+    protected function addOrderColumn($column, $columnTableName, $data)
     {
         true === $this->accessor->getValue($column, 'orderable') ? $this->orderColumns[] = ($columnTableName ? $columnTableName.'.' : '').$data : $this->orderColumns[] = null;
 
@@ -686,7 +695,7 @@ class DatatableQueryBuilder
      *
      * @return $this
      */
-    private function addSearchColumn($column, $columnTableName, $data)
+    protected function addSearchColumn($column, $columnTableName, $data)
     {
         true === $this->accessor->getValue($column, 'searchable') ? $this->searchColumns[] = ($columnTableName ? $columnTableName.'.' : '').$data : $this->searchColumns[] = null;
 
@@ -702,7 +711,7 @@ class DatatableQueryBuilder
      *
      * @return $this
      */
-    private function addSearchOrderColumn($column, $columnTableName, $data)
+    protected function addSearchOrderColumn($column, $columnTableName, $data)
     {
         $this->addOrderColumn($column, $columnTableName, $data);
         $this->addSearchColumn($column, $columnTableName, $data);
@@ -716,14 +725,16 @@ class DatatableQueryBuilder
      * @param string $columnTableName
      * @param string $alias
      * @param string $type
+     * @param string $with
      *
      * @return $this
      */
-    private function addJoin($columnTableName, $alias, $type)
+    protected function addJoin($columnTableName, $alias, $type, $with = null)
     {
         $this->joins[$columnTableName] = [
             'alias' => $alias,
             'type' => $type,
+            'with' => $with,
         ];
 
         return $this;
@@ -736,7 +747,7 @@ class DatatableQueryBuilder
      *
      * @return ClassMetadata
      */
-    private function getMetadata($entityName)
+    protected function getMetadata($entityName)
     {
         try {
             $metadata = $this->em->getMetadataFactory()->getMetadataFor($entityName);
@@ -754,7 +765,7 @@ class DatatableQueryBuilder
      *
      * @return string
      */
-    private function getSafeName($name)
+    protected function getSafeName($name)
     {
         try {
             $reservedKeywordsList = $this->em->getConnection()->getDatabasePlatform()->getReservedKeywordsList();
@@ -766,7 +777,7 @@ class DatatableQueryBuilder
         return $isReservedKeyword ? "_{$name}" : $name;
     }
 
-    private function getIdentifier(ClassMetadata $metadata)
+    protected function getIdentifier(ClassMetadata $metadata)
     {
         $identifiers = $metadata->getIdentifierFieldNames();
 
@@ -778,7 +789,7 @@ class DatatableQueryBuilder
      *
      * @return bool
      */
-    private function isSearchableColumn(ColumnInterface $column)
+    protected function isSearchableColumn(ColumnInterface $column)
     {
         $searchColumn = null !== $this->accessor->getValue($column, 'dql') && true === $this->accessor->getValue($column, 'searchable');
 

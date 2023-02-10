@@ -11,28 +11,20 @@
 
 namespace Sg\DatatablesBundle\Datatable\Column;
 
-use Closure;
 use Exception;
+use Sg\DatatablesBundle\Datatable\Column\ActionColumn;
 use Sg\DatatablesBundle\Datatable\Action\Action;
 use Sg\DatatablesBundle\Datatable\Helper;
-use Sg\DatatablesBundle\Datatable\HtmlContainerTrait;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ActionColumn extends AbstractColumn
+class DropdownActionColumn extends ActionColumn
 {
-    /*
-     * This Column has a 'start_html' and a 'end_html' option.
-     * <startHtml> action1 action2 actionX </endHtml>
-     */
-    use HtmlContainerTrait;
-
     /**
-     * The Actions container.
-     * A required option.
+     * The dropdowns container.
      *
-     * @var array
+     * @var array[<Action>]
      */
-    protected $actions;
+    protected $dropdowns;
 
     //-------------------------------------------------
     // ColumnInterface
@@ -41,49 +33,41 @@ class ActionColumn extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    public function dqlConstraint($dql)
-    {
-        return null === $dql ? true : false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isSelectColumn()
-    {
-        return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function addDataToOutputArray(array &$row): void
     {
-        $actionRowItems = [];
+        parent::addDataToOutputArray($row);
+        
+        $dropdownRowItems = [];
 
-        /** @var Action $action */
-        foreach ($this->actions as $actionKey => $action) {
-            $actionRowItems[$actionKey] = $action->callRenderIfClosure($row);
+        /** @var Action $dropdown */
+        if (!empty($this->dropdowns)) {
+            foreach ($this->dropdowns as $dropdownKey => $dropdown) {
+                $dropdownRowItems[$dropdownKey] = $dropdown->callRenderIfClosure($row);
+            }
         }
 
-        $row['sg_datatables_actions'][$this->getIndex()] = $actionRowItems;
+        $row['sg_datatables_dropdowns'][$this->getIndex()] = $dropdownRowItems;
     }
 
     /**
-     * Helper function to get render template variables.
-     * 
-     * @param array $row
-     *
-     * @return array
+     * {@inheritdoc}
      */
     protected function getCellContentTemplateVars(array $row): array
     {
+        $vars = parent::getCellContentTemplateVars($row);
+
+        if (empty($this->dropdowns)) {
+            $vars['dropdowns'] = NULL;
+            
+            return $vars;
+        }
+        
         $parameters = [];
         $attributes = [];
         $values = [];
 
-        /** @var Action $action */
-        foreach ($this->actions as $actionKey => $action) {
+        // The same logic as for parent actions.
+        foreach ($this->dropdowns as $actionKey => $action) {
             $routeParameters = $action->getRouteParameters();
             if (\is_array($routeParameters)) {
                 foreach ($routeParameters as $key => $value) {
@@ -135,53 +119,22 @@ class ActionColumn extends AbstractColumn
                 }
             }
         }
+
+        $vars['dropdowns'] = $this->dropdowns;
+        $vars['render_if_dropdowns'] = $row['sg_datatables_dropdowns'][$this->index];
+        $vars['route_parameters_dropdowns'] = $parameters;
+        $vars['attributes_dropdowns'] = $attributes;
+        $vars['values_dropdowns'] = $values;
         
-        return [
-          'actions' => $this->actions,
-          'route_parameters' => $parameters,
-          'attributes' => $attributes,
-          'values' => $values,
-          'render_if_actions' => $row['sg_datatables_actions'][$this->index],
-          'start_html_container' => $this->startHtml,
-          'end_html_container' => $this->endHtml,
-        ];
+        return $vars;
     }
     
     /**
      * {@inheritdoc}
      */
-    public function renderSingleField(array &$row): static
-    {
-        $row[$this->getIndex()] = $this->twig->render(
-            $this->getCellContentTemplate(),
-            $this->getCellContentTemplateVars($row)
-        );
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function renderToMany(array &$row): static
-    {
-        throw new Exception('ActionColumn::renderToMany(): This function should never be called.');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getCellContentTemplate()
     {
-        return '@SgDatatables/render/action.html.twig';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getColumnType()
-    {
-        return parent::ACTION_COLUMN;
+        return '@SgDatatables/render/dropdown_action.html.twig';
     }
 
     //-------------------------------------------------
@@ -195,31 +148,13 @@ class ActionColumn extends AbstractColumn
     {
         parent::configureOptions($resolver);
 
-        $resolver->remove('dql');
-        $resolver->remove('data');
-        $resolver->remove('default_content');
-
-        // the 'orderable' option is removed, but via getter it returns 'false' for the view
-        $resolver->remove('orderable');
-        $resolver->remove('order_data');
-        $resolver->remove('order_sequence');
-
-        // the 'searchable' option is removed, but via getter it returns 'false' for the view
-        $resolver->remove('searchable');
-
-        $resolver->remove('join_type');
-        $resolver->remove('type_of_field');
-
-        $resolver->setRequired(['actions']);
+        $resolver->setDefined('dropdowns');
 
         $resolver->setDefaults([
-            'start_html' => null,
-            'end_html' => null,
+            'dropdowns' => null,
         ]);
 
-        $resolver->setAllowedTypes('actions', 'array');
-        $resolver->setAllowedTypes('start_html', ['null', 'string']);
-        $resolver->setAllowedTypes('end_html', ['null', 'string']);
+        $resolver->setAllowedTypes('dropdowns', ['array', 'null']);
 
         return $this;
     }
@@ -227,13 +162,13 @@ class ActionColumn extends AbstractColumn
     //-------------------------------------------------
     // Getters && Setters
     //-------------------------------------------------
-
+    
     /**
      * @return Action[]
      */
-    public function getActions()
+    public function getDropdowns()
     {
-        return $this->actions;
+        return $this->dropdowns;
     }
 
     /**
@@ -241,28 +176,28 @@ class ActionColumn extends AbstractColumn
      *
      * @return $this
      */
-    public function setActions(array $actions)
+    public function setDropdowns(array $actions)
     {
         if (\count($actions) > 0) {
             foreach ($actions as $action) {
-                $this->addAction($action);
+                $this->addDropdown($action);
             }
         } else {
-            throw new Exception('ActionColumn::setActions(): The actions array should contain at least one element.');
+            $this->dropdowns = NULL;
         }
 
         return $this;
     }
 
     /**
-     * Add action.
+     * Add dropdown action.
      *
      * @return $this
      */
-    public function addAction(array $action)
+    public function addDropdown(array $action)
     {
         $newAction = new Action($this->datatableName);
-        $this->actions[] = $newAction->set($action);
+        $this->dropdowns[] = $newAction->set($action);
 
         return $this;
     }
@@ -272,32 +207,19 @@ class ActionColumn extends AbstractColumn
      *
      * @return $this
      */
-    public function removeAction(Action $action)
+    public function removeDropdown(Action $action)
     {
-        foreach ($this->actions as $k => $a) {
-            if ($action === $a) {
-                unset($this->actions[$k]);
 
-                break;
+        if (!empty($this->dropdowns)) {
+            foreach ($this->dropdowns as $k => $a) {
+                if ($action === $a) {
+                    unset($this->dropdowns[$k]);
+
+                    break;
+                }
             }
         }
 
         return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getOrderable()
-    {
-        return false;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getSearchable()
-    {
-        return false;
     }
 }

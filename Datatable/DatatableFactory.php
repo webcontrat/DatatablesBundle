@@ -12,6 +12,7 @@
 namespace Sg\DatatablesBundle\Datatable;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -28,6 +29,13 @@ class DatatableFactory
      * @var AuthorizationCheckerInterface
      */
     protected $authorizationChecker;
+
+    /**
+     * The doctrine service.
+     *
+     * @var ManagerRegistry
+     */
+    protected $doctrine;
 
     /**
      * The SecurityTokenStorage service.
@@ -69,18 +77,18 @@ class DatatableFactory
         TokenStorageInterface $securityToken,
         $translator,
         RouterInterface $router,
-        EntityManagerInterface $em,
+        ManagerRegistry $doctrine,
         Environment $twig
     ) {
         $this->authorizationChecker = $authorizationChecker;
         $this->securityToken = $securityToken;
 
-        if (!($translator instanceof LegacyTranslatorInterface) && !($translator instanceof TranslatorInterface)) {
-            throw new \InvalidArgumentException(sprintf('The $translator argument of %s must be an instance of %s or %s, a %s was given.', static::class, LegacyTranslatorInterface::class, TranslatorInterface::class, get_class($translator)));
+        if (! ($translator instanceof LegacyTranslatorInterface) && ! ($translator instanceof TranslatorInterface)) {
+            throw new \InvalidArgumentException(sprintf('The $translator argument of %s must be an instance of %s or %s, a %s was given.', static::class, LegacyTranslatorInterface::class, TranslatorInterface::class, \get_class($translator)));
         }
         $this->translator = $translator;
         $this->router = $router;
-        $this->em = $em;
+        $this->doctrine = $doctrine;
         $this->twig = $twig;
     }
 
@@ -113,7 +121,7 @@ class DatatableFactory
                 $this->securityToken,
                 $this->translator,
                 $this->router,
-                $this->em,
+                $this->doctrine,
                 $this->twig
             );
         }

@@ -23,10 +23,10 @@ use Twig\Environment;
 
 abstract class AbstractColumn implements ColumnInterface
 {
-    use OptionsTrait;
-
     // Use an 'add_if' option to check in ColumnBuilder if the Column can be added.
     use AddIfTrait;
+
+    use OptionsTrait;
 
     //-------------------------------------------------
     // Column Types
@@ -35,22 +35,22 @@ abstract class AbstractColumn implements ColumnInterface
     /**
      * Identifies a Data Column.
      */
-    const DATA_COLUMN = 'data';
+    public const DATA_COLUMN = 'data';
 
     /**
      * Identifies an Action Column.
      */
-    const ACTION_COLUMN = 'action';
+    public const ACTION_COLUMN = 'action';
 
     /**
      * Identifies a Multiselect Column.
      */
-    const MULTISELECT_COLUMN = 'multiselect';
+    public const MULTISELECT_COLUMN = 'multiselect';
 
     /**
      * Identifies a Virtual Column.
      */
-    const VIRTUAL_COLUMN = 'virtual';
+    public const VIRTUAL_COLUMN = 'virtual';
 
     //--------------------------------------------------------------------------------------------------
     // DataTables - Columns Options
@@ -190,6 +190,14 @@ abstract class AbstractColumn implements ColumnInterface
     protected $joinType;
 
     /**
+     * Join conditions, if the column represents an association.
+     * Default: null
+     *
+     * @var string|null
+     */
+    protected $joinConditions;
+    
+    /**
      * The data type of the column.
      * Is set automatically in ColumnBuilder when 'null'.
      * Default: null.
@@ -303,7 +311,7 @@ abstract class AbstractColumn implements ColumnInterface
     /**
      * @return $this
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): static
     {
         // 'dql' and 'data' options need no default value
         $resolver->setDefined(['dql', 'data']);
@@ -323,6 +331,7 @@ abstract class AbstractColumn implements ColumnInterface
             'width' => null,
             'add_if' => null,
             'join_type' => 'leftJoin',
+            'join_conditions' => null,
             'type_of_field' => null,
             'responsive_priority' => null,
             'sent_in_response' => true,
@@ -344,6 +353,7 @@ abstract class AbstractColumn implements ColumnInterface
         $resolver->setAllowedTypes('width', ['null', 'string']);
         $resolver->setAllowedTypes('add_if', ['null', 'Closure']);
         $resolver->setAllowedTypes('join_type', 'string');
+        $resolver->setAllowedTypes('join_conditions', ['null', 'string']);
         $resolver->setAllowedTypes('type_of_field', ['null', 'string']);
         $resolver->setAllowedTypes('responsive_priority', ['null', 'int']);
         $resolver->setAllowedTypes('sent_in_response', ['bool']);
@@ -384,7 +394,7 @@ abstract class AbstractColumn implements ColumnInterface
      */
     public function isAssociation()
     {
-        return false === strstr($this->dql, '.') ? false : true;
+        return false === strstr($this->dql??'', '.') ? false : true;
     }
 
     /**
@@ -422,9 +432,8 @@ abstract class AbstractColumn implements ColumnInterface
     /**
      * {@inheritdoc}
      */
-    public function addDataToOutputArray(array &$row)
+    public function addDataToOutputArray(array &$row): void
     {
-        return null;
     }
 
     /**
@@ -769,6 +778,30 @@ abstract class AbstractColumn implements ColumnInterface
         return $this;
     }
 
+    /**
+     * Get join conditions.
+     *
+     * @return string
+     */
+    public function getJoinConditions()
+    {
+        return $this->joinConditions;
+    }
+
+    /**
+     * Set join conditions.
+     *
+     * @param string $joinConditions
+     *
+     * @return $this
+     */
+    public function setJoinConditions($joinConditions = null)
+    {
+        $this->joinConditions = $joinConditions;
+
+        return $this;
+    }
+    
     /**
      * Get type of field.
      *

@@ -47,6 +47,7 @@ With 'null' initialized options uses the default value of the DataTables plugin.
 | width               | null or string     | null              |          | Column width assignment. |
 | add_if              | null or Closure    | null              |          | Add column only if conditions are TRUE. |
 | join_type           | string             | 'leftJoin'        |          | Join type (default: 'leftJoin'), if the column represents an association. |
+| join_conditions     | null or string     | null              |          | Join conditions (using WITH), if the column represents an association. |
 | type_of_field       | null or string     | null (autodetect) |          | Set the data type itself for ordering (example: integer instead string). |
 | responsive_priority | null or int        | null              |          | Set column's visibility priority. Requires the Responsive extension. |
 | filter              | array              | TextFilter        |          | A Filter instance for individual filtering. |
@@ -124,6 +125,7 @@ $this->columnBuilder
         'data' => 'comments[,].title',
         'searchable' => true,
         'orderable' => true,
+        'join_conditions' => 'comments.reviewed = 1',
     ))
 ;
 ```

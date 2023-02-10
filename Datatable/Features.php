@@ -122,6 +122,16 @@ class Features
      */
     protected $stateSave;
 
+    /**
+     * Server side - feature control DataTables server-side processing mode.
+     * DataTables default: false
+     * Default: null means true.
+     *
+     * @var bool|null
+     */
+    protected $serverSide;
+
+    
     public function __construct()
     {
         $this->initOptions();
@@ -148,6 +158,7 @@ class Features
             'scroll_y' => null,
             'searching' => null,
             'state_save' => null,
+            'server_side' => null,
         ]);
 
         $resolver->setAllowedTypes('auto_width', ['null', 'bool']);
@@ -161,6 +172,7 @@ class Features
         $resolver->setAllowedTypes('scroll_y', ['null', 'string']);
         $resolver->setAllowedTypes('searching', ['null', 'bool']);
         $resolver->setAllowedTypes('state_save', ['null', 'bool']);
+        $resolver->setAllowedTypes('server_side', ['null', 'bool']);
 
         return $this;
     }
@@ -385,6 +397,26 @@ class Features
     public function setStateSave($stateSave)
     {
         $this->stateSave = $stateSave;
+
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getServerSide()
+    {
+        return $this->serverSide;
+    }
+
+    /**
+     * @param bool|null $serverSide
+     *
+     * @return $this
+     */
+    public function setServerSide($serverSide)
+    {
+        $this->serverSide = $serverSide;
 
         return $this;
     }

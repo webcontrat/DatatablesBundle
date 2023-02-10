@@ -26,14 +26,14 @@ class DatatableResponse
      *
      * @var Request
      */
-    private $request;
+    protected $request;
 
     /**
      * $_GET or $_POST parameters.
      *
      * @var array
      */
-    private $requestParams;
+    protected $requestParams;
 
     /**
      * A DatatableInterface instance.
@@ -41,7 +41,7 @@ class DatatableResponse
      *
      * @var DatatableInterface|null
      */
-    private $datatable;
+    protected $datatable;
 
     /**
      * A DatatableQueryBuilder instance.
@@ -50,7 +50,7 @@ class DatatableResponse
      *
      * @var DatatableQueryBuilder|null
      */
-    private $datatableQueryBuilder;
+    protected $datatableQueryBuilder;
 
     public function __construct(RequestStack $requestStack)
     {
@@ -146,7 +146,7 @@ class DatatableResponse
     }
 
     //-------------------------------------------------
-    // Private
+    // protected
     //-------------------------------------------------
 
     /**
@@ -156,7 +156,7 @@ class DatatableResponse
      *
      * @return DatatableQueryBuilder
      */
-    private function createDatatableQueryBuilder()
+    protected function createDatatableQueryBuilder()
     {
         if (null === $this->datatable) {
             throw new Exception('DatatableResponse::getDatatableQueryBuilder(): Set a Datatable class with setDatatable().');
@@ -173,7 +173,7 @@ class DatatableResponse
      *
      * @return array
      */
-    private function getRequestParams()
+    protected function getRequestParams()
     {
         $parameterBag = null;
         $type = $this->datatable->getAjax()->getMethod();
@@ -194,7 +194,7 @@ class DatatableResponse
      *
      * @return bool|int
      */
-    private function validateColumnsPositions(DatatableInterface $datatable)
+    protected function validateColumnsPositions(DatatableInterface $datatable)
     {
         $columns = $datatable->getColumnBuilder()->getColumns();
         $lastPosition = \count($columns);

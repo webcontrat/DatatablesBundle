@@ -19,7 +19,7 @@ interface ColumnInterface
     /**
      * @var int
      */
-    const LAST_POSITION = -1;
+    public const LAST_POSITION = -1;
 
     /**
      * Validates $dql. Normally a non-empty string is expected.
@@ -67,10 +67,8 @@ interface ColumnInterface
     /**
      * Sometimes it is necessary to add some special data to the output array.
      * For example, the visibility of actions.
-     *
-     * @return $this
      */
-    public function addDataToOutputArray(array &$row);
+    public function addDataToOutputArray(array &$row): void;
 
     /**
      * Render images or any other special content.
@@ -83,14 +81,14 @@ interface ColumnInterface
      *
      * @return $this
      */
-    public function renderSingleField(array &$row);
+    public function renderSingleField(array &$row): static;
 
     /**
      * Render toMany.
      *
      * @return $this
      */
-    public function renderToMany(array &$row);
+    public function renderToMany(array &$row): static;
 
     /**
      * Get the template for the 'renderCellContent' function.

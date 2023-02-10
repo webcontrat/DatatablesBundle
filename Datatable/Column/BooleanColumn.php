@@ -26,12 +26,12 @@ class BooleanColumn extends AbstractColumn
     /**
      * @internal
      */
-    const RENDER_TRUE_VALUE = 'true';
+    public const RENDER_TRUE_VALUE = 'true';
 
     /**
      * @internal
      */
-    const RENDER_FALSE_VALUE = 'false';
+    public const RENDER_FALSE_VALUE = 'false';
 
     /**
      * The icon for a value that is true.
@@ -72,7 +72,7 @@ class BooleanColumn extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    public function renderSingleField(array &$row)
+    public function renderSingleField(array &$row): static
     {
         $path = Helper::getDataPropertyPath($this->data);
 
@@ -92,7 +92,7 @@ class BooleanColumn extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    public function renderToMany(array &$row)
+    public function renderToMany(array &$row): static
     {
         $value = null;
         $path = Helper::getDataPropertyPath($this->data, $value);
@@ -160,7 +160,7 @@ class BooleanColumn extends AbstractColumn
     /**
      * @return $this
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): static
     {
         parent::configureOptions($resolver);
 

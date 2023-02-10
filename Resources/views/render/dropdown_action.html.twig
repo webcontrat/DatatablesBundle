@@ -1,0 +1,45 @@
+{##
+ # This file is part of the SgDatatablesBundle package.
+ #
+ # (c) stwe <https://github.com/stwe/DatatablesBundle>
+ #
+ # For the full copyright and license information, please view the LICENSE
+ # file that was distributed with this source code.
+ #}
+{% extends '@SgDatatables/render/action.html.twig' %}
+
+{% import "@SgDatatables/render/action.html.twig" as macros %}
+
+{% block actions %}
+    {{ parent() }}
+    
+    {% if dropdowns is not same as(null) %}
+        {% block dropdown_toggle %}
+        <button type="button" class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">{% block dropdown_toggle_label %}Actions{% endblock %}</span>
+        </button>
+        {% endblock %}
+        <div class="dropdown-menu">
+        {% for dropdownKey, action in dropdowns %}
+            {% if render_if_dropdowns[dropdownKey] is same as(true) %}
+                {% if action.dropdownDivider %}
+                    <div class="dropdown-divider"></div>
+                {%  endif %}
+                {% if action.button is same as(false) %}
+                    {{ action.startHtml|raw }}
+                    <a {{ macros.href(action, route_parameters_dropdowns[dropdownKey]) }} {{ macros.attributes(attributes_dropdowns[dropdownKey]) }} {{ macros.confirm_dialog(action) }}>
+                        {{ macros.link_title(action) }}
+                    </a>
+                    {{ action.endHtml|raw }}
+                {% else %}
+                    {{ action.startHtml|raw }}
+                    <button type="button" {{ macros.value(values_dropdowns[dropdownKey]) }} {{ macros.href(action, route_parameters_dropdowns[dropdownKey]) }} {{ macros.attributes(attributes_dropdowns[dropdownKey]) }} {{ macros.confirm_dialog(action) }}>
+                        {{ macros.link_title(action) }}
+                    </button>
+                    {{ action.endHtml|raw }}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

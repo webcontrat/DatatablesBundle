@@ -11,8 +11,9 @@
 
 namespace Sg\DatatablesBundle\Datatable;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
+use LogicException;
 use Sg\DatatablesBundle\Datatable\Column\ColumnBuilder;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -31,6 +32,13 @@ abstract class AbstractDatatable implements DatatableInterface
      * @var AuthorizationCheckerInterface
      */
     protected $authorizationChecker;
+
+    /**
+     * The doctrine service.
+     *
+     * @var ManagerRegistry
+     */
+    protected $doctrine;
 
     /**
      * The SecurityTokenStorage service.
@@ -147,14 +155,14 @@ abstract class AbstractDatatable implements DatatableInterface
     protected static $uniqueCounter = [];
 
     /**
-     * @throws Exception
+     * @throws LogicException
      */
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $securityToken,
         $translator,
         RouterInterface $router,
-        EntityManagerInterface $em,
+        ManagerRegistry $doctrine,
         Environment $twig
     ) {
         $this->validateName();
@@ -168,14 +176,15 @@ abstract class AbstractDatatable implements DatatableInterface
         $this->authorizationChecker = $authorizationChecker;
         $this->securityToken = $securityToken;
 
-        if (!($translator instanceof LegacyTranslatorInterface) && !($translator instanceof TranslatorInterface)) {
-            throw new \InvalidArgumentException(sprintf('The $translator argument of %s must be an instance of %s or %s, a %s was given.', static::class, LegacyTranslatorInterface::class, TranslatorInterface::class, get_class($translator)));
+        if (! ($translator instanceof LegacyTranslatorInterface) && ! ($translator instanceof TranslatorInterface)) {
+            throw new \InvalidArgumentException(sprintf('The $translator argument of %s must be an instance of %s or %s, a %s was given.', static::class, LegacyTranslatorInterface::class, TranslatorInterface::class, \get_class($translator)));
         }
         $this->translator = $translator;
         $this->router = $router;
-        $this->em = $em;
+        $this->doctrine = $doctrine;
         $this->twig = $twig;
-
+        
+        $this->em = $em = $this->getEntityManager();
         $metadata = $em->getClassMetadata($this->getEntity());
         $this->columnBuilder = new ColumnBuilder($metadata, $twig, $router, $this->getName(), $em);
 
@@ -269,9 +278,17 @@ abstract class AbstractDatatable implements DatatableInterface
     /**
      * {@inheritdoc}
      */
+    public function getDoctrine()
+    {
+        return $this->doctrine;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getEntityManager()
     {
-        return $this->em;
+        return $this->getDoctrine()->getManager();
     }
 
     /**
@@ -313,12 +330,13 @@ abstract class AbstractDatatable implements DatatableInterface
     /**
      * Checks the name only contains letters, numbers, underscores or dashes.
      *
-     * @throws Exception
+     * @throws LogicException
      */
     private function validateName()
     {
-        if (1 !== preg_match(self::NAME_REGEX, $this->getName())) {
-            throw new Exception('AbstractDatatable::validateName(): The result of the getName method can only contain letters, numbers, underscore and dashes.');
+        $name = $this->getName();
+        if (1 !== preg_match(self::NAME_REGEX, $name)) {
+            throw new LogicException(sprintf('AbstractDatatable::validateName(): "%s" is invalid Datatable Name. Name can only contain letters, numbers, underscore and dashes.', $name));
         }
     }
 }

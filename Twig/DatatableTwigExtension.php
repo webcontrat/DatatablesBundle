@@ -71,6 +71,11 @@ class DatatableTwigExtension extends AbstractExtension
                 ['is_safe' => ['html'], 'needs_environment' => true]
             ),
             new TwigFunction(
+                'sg_datatables_render_json',
+                [$this, 'datatablesRenderJson'],
+                ['is_safe' => ['html'], 'needs_environment' => true]
+            ),
+            new TwigFunction(
                 'sg_datatables_render_filter',
                 [$this, 'datatablesRenderFilter'],
                 ['is_safe' => ['html'], 'needs_environment' => true]
@@ -140,6 +145,27 @@ class DatatableTwigExtension extends AbstractExtension
                 'sg_datatables_view' => $datatable,
             ]
         );
+    }
+
+    /**
+     * Renders the json config options.
+     *
+     * @return string
+     */
+    public function datatablesRenderJson(Environment $twig, DatatableInterface $datatable)
+    {
+        $json = $twig->render(
+            '@SgDatatables/datatable/datatable_js.json.twig',
+            [
+                'sg_datatables_view' => $datatable,
+            ]
+        );
+        
+        // Try to make valid json string, remove comma before [ { etc.
+        $regex = '/\,(?!\s*?[\{\[\"\'\w])/';
+        $json = preg_replace($regex, '', $json);
+
+        return $json;
     }
 
     /**

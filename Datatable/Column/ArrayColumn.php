@@ -16,7 +16,7 @@ class ArrayColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function renderSingleField(array &$row)
+    public function renderSingleField(array &$row): static
     {
         $row[$this->data] = $this->arrayToString($row[$this->data] ?? []);
 

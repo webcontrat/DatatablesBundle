@@ -13,7 +13,7 @@ services:
             - '@security.token_storage'
             - '@translator'
             - '@router'
-            - '@doctrine.orm.entity_manager'
+            - '@doctrine'
             - '@twig'
 
     sg_datatables.response:
@@ -30,5 +30,13 @@ services:
             - '@security.token_storage'
             - '@translator'
             - '@router'
-            - '@doctrine.orm.entity_manager'
+            - '@doctrine'
             - '@twig'
+
+    Sg\DatatablesBundle\Response\DatatableResponse:
+        alias: sg_datatables.response
+        public: false
+
+    Sg\DatatablesBundle\Datatable\DatatableFactory:
+        alias: sg_datatables.factory
+        public: false
